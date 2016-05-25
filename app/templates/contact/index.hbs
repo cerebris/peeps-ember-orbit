@@ -1,0 +1,17 @@
+{{gravatar-image email=model.email}}
+
+<h2>{{model.fullName}}</h2>
+
+{{#if model.phoneNumbers}}
+  <h3>Phone numbers</h3>
+  <ul class="phone-numbers">
+    {{#each model.phoneNumbers as |phoneNumber|}}
+      <li>{{phoneNumber.phoneNumber}}</li>
+    {{/each}}
+  </ul>
+{{/if}}
+
+<div class="well well-small">
+  <a class="btn btn-default" type="button" {{action 'edit'}}>Edit</a>
+  <a class="btn btn-danger" type="button" {{action 'remove'}}>Remove</a>
+</div>

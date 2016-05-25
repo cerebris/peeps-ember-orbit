@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-sm-3 sidebar">
+    <h3>All contacts ({{model.length}})</h3>
+    <ul class="nav nav-pills nav-stacked">
+      {{#each model as |contact|}}
+        {{#link-to "contact" contact tagName="li"}}
+          {{#link-to "contact" contact}}
+            {{contact.fullName}}
+          {{/link-to}}
+        {{/link-to}}
+      {{/each}}
+    </ul>
+  </div>
+
+  <div class="col-sm-9">
+    {{outlet "detail"}}
+  </div>
+</div>

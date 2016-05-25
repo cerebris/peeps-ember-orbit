@@ -1,0 +1,39 @@
+<form {{action "save" on="submit"}} role="form" class="form-horizontal">
+  <legend>{{#if isNew}}Create{{else}}Edit{{/if}} Contact</legend>
+  <div class="form-group">
+    <label for="inputFirstName" class="col-sm-2 control-label">First name:</label>
+    <div class="col-sm-10">
+      {{input type="text" class="form-control" id="inputFirstName" value=model.firstName}}
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputLastName" class="col-sm-2 control-label">Last name:</label>
+    <div class="col-sm-10">
+      {{input type="text" class="form-control" id="inputLastName" value=model.lastName}}
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail" class="col-sm-2 control-label">Email:</label>
+    <div class="col-sm-10">
+      {{input type="text" class="form-control" id="inputEmail" value=model.email}}
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Phone numbers:</label>
+    <div class="col-sm-10">
+      {{#each model.phoneNumbers as |phoneNumber|}}
+      <div class="phone-number">
+        {{input type="text" value=phoneNumber.phoneNumber placeholder="Number"}}
+        <a class="btn" {{action "removePhoneNumber" phoneNumber}}><i class="icon-minus-sign"></i> Remove</a>
+      </div>
+      {{/each}}
+      <a class="btn" {{action "addPhoneNumber"}}><i class="icon-plus-sign"></i> Add a phone number</a>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="button" class="btn" {{action "cancel"}}>Cancel</button>
+    </div>
+  </div>
+</form>

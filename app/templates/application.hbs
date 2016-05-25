@@ -1,3 +1,19 @@
-<h2 id="title">Welcome to Ember</h2>
-
-{{outlet}}
+<header class="navbar navbar-static-top" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      {{#link-to "contacts" class="navbar-brand"}}Peeps{{/link-to}}
+    </div>
+    <div class="collapse navbar-collapse">
+      <div class="nav navbar-nav navbar-right">
+        {{#link-to "contacts.new" type="button" class="btn btn-default navbar-btn"}}
+        Add Contact
+        {{/link-to}}
+      </div>
+    </div>
+  </div>
+</header>
+<div id="content">
+  <div class="container">
+    {{outlet}}
+  </div>
+</div>
