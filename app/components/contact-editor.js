@@ -10,15 +10,15 @@ export default Ember.Component.extend({
   init() {
     this._super(...arguments);
 
-    this.transaction = this.get('store').createTransaction();
+    this.forkedStore = this.get('store').fork();
 
     if (this.get('isNew')) {
-      this.transaction.addRecord({type: 'contact'})
+      this.forkedStore.addRecord({type: 'contact'})
         .then(contact => this.set('model', contact));
 
     } else {
       let storeModel = this.get('storeModel');
-      let model = this.transaction.cache.query(qb.record(storeModel));
+      let model = this.forkedStore.cache.query(qb.record(storeModel));
       this.set('model', model);
     }
   },
@@ -29,7 +29,7 @@ export default Ember.Component.extend({
 
   actions: {
     addPhoneNumber() {
-      this.transaction
+      this.forkedStore
         .addRecord({type: 'phoneNumber'})
         .then((phoneNumber) => {
           this.get('model.phoneNumbers').pushObject(phoneNumber);
@@ -43,8 +43,8 @@ export default Ember.Component.extend({
     },
 
     save() {
-      this.transaction
-        .commit()
+      this.get('store')
+        .merge(this.forkedStore)
         .then(() => {
           let model = this.get('model');
           let storeModel = this.get('store').cache.query(qb.record(model));
