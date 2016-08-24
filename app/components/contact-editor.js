@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import qb from 'orbit-common/query/builder';
+import qb from 'orbit/query/builder';
 
 export default Ember.Component.extend({
   store: Ember.inject.service(),

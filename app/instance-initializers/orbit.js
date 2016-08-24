@@ -1,82 +1,54 @@
-import Coordinator from 'orbit-common/coordinator';
-import JSONAPISource from 'orbit-common/jsonapi-source';
-import LocalStorageSource from 'orbit-common/local-storage-source';
 import Orbit from 'orbit';
-import Ember from 'ember';
-import qb from 'orbit-common/query/builder';
-
-// import {
-//   addRecord,
-//   addToHasMany
-// } from 'orbit-common/transform/operators';
+// import Coordinator from 'orbit/coordinator';
+import JSONAPISource from 'orbit-jsonapi/jsonapi-source';
+import LocalStorageSource from 'orbit-local-storage/local-storage-source';
+import qb from 'orbit/query/builder';
+import {
+  ClientError,
+  NetworkError
+} from 'orbit/lib/exceptions';
+import fetch from 'ember-network/fetch';
 
 export function initialize(appInstance) {
-  Orbit.ajax = Ember.$.ajax;
+  Orbit.fetch = fetch;
 
-  let coordinator = new Coordinator();
+  // let coordinator = new Coordinator();
   let store = appInstance.lookup('service:store').orbitStore;
   let schema = store.schema;
+  let backup = new LocalStorageSource({ schema, namespace: 'peeps' });
+  let remote = new JSONAPISource({ schema, keyMap: store.keyMap });
 
-  coordinator.addNode('master', {
-    sources: [store]
-  });
-
-  let localStorage = new LocalStorageSource({ schema, namespace: 'peeps' });
-
-  coordinator.addNode('backup', {
-    sources: [localStorage]
-  });
-
-  coordinator.defineStrategy({
-    type: 'transform',
-    sourceNode: 'master',
-    targetNode: 'backup',
-    blocking: false
-  });
-
-  if (true) {
-    let jsonApiSource = new JSONAPISource({ schema, keyMap: store.keyMap });
-
-    coordinator.addNode('upstream', {
-      sources: [jsonApiSource]
-    });
-
-    coordinator.defineStrategy({
-      type: 'request',
-      sourceNode: 'master',
-      targetNode: 'upstream',
-      sourceEvent: 'beforeUpdate',
-      targetRequest: 'transform',
-      blocking: true,
-      mergeTransforms: true
-    });
-
-    coordinator.defineStrategy({
-      type: 'request',
-      sourceNode: 'master',
-      targetNode: 'upstream',
-      sourceEvent: 'beforeQuery',
-      targetRequest: 'fetch',
-      blocking: true,
-      mergeTransforms: true
-    });
-
-  } else {
-    // load data from local storage
-    localStorage.fetch(qb.records())
-      .then(transforms => {
-        transforms.forEach(transform => {
-          store.transform(transform);
+  store.on('update',
+    transform => {
+      remote.push(transform)
+        .catch(e => {
+          if (e instanceof ClientError) {
+            store.rollback(transform.id, -1);
+            remote.requestQueue.clear();
+          } else {
+            throw e;
+          }
         });
-      });
-  }
+  });
 
-  // store.update([
-  //   addRecord({type: 'phoneNumber', id: '4', attributes: {phoneNumber: '123'}}),
-  //   addRecord({type: 'contact', id: '1', attributes: {firstName: 'Dan', lastName: 'Gebhardt', email: 'dan@cerebris.com'}}),
-  //   addToHasMany({type: 'contact', id: '1'}, 'phoneNumbers', {type: 'phoneNumber', id: '4'}),
-  //   addRecord({type: 'contact', id: '2', attributes: {firstName: 'Tom', lastName: 'ster', email: 'tomster@emberjs.com'}})
-  // ]);
+  // handle remote errors
+  remote.on('pushFail', (transform, e) => {
+    if (e instanceof NetworkError) {
+      // When network errors are encountered, try again in 1s
+      setTimeout(() => remote.requestQueue.retry(), 1000);
+    }
+  });
+
+  // sync remote changes with the store
+  remote.on('transform', transform => { store.sync(transform); });
+
+  // warm the store's cache from backup
+  backup.pull(qb.records())
+    .then(transforms => store.sync(transforms))
+    .then(() => {
+      // backup subsequent changes to the store
+      store.on('transform', transform => backup.sync(transform));
+    });
 }
 
 export default {

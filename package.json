@@ -38,12 +38,13 @@
     "ember-cli-uglify": "^1.2.0",
     "ember-export-application-global": "^1.0.5",
     "ember-load-initializers": "^0.5.1",
+    "ember-network": "0.3.0",
     "ember-orbit": "git://github.com/orbitjs/ember-orbit#master",
     "ember-resolver": "^2.0.3",
     "immutable": "^3.8.1",
     "loader.js": "^4.0.1",
-    "orbit.js": "git://github.com/orbitjs/orbit.js#master",
-    "rxjs-es": "5.0.0-beta.8",
-    "symbol-observable": "~0.2.4"
+    "orbit-core": "^0.8.0-beta.2",
+    "orbit-jsonapi": "^0.8.0-beta.2",
+    "orbit-local-storage": "^0.8.0-beta.1"
   }
 }
