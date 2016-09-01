@@ -8,6 +8,7 @@ module.exports = function(defaults) {
     orbit: {
       sources: [
         'orbit-jsonapi',
+        'orbit-indexeddb',
         'orbit-local-storage'
       ]
     }

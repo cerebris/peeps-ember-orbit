@@ -43,8 +43,9 @@
     "ember-resolver": "^2.0.3",
     "immutable": "^3.8.1",
     "loader.js": "^4.0.1",
-    "orbit-core": "^0.8.0-beta.2",
-    "orbit-jsonapi": "^0.8.0-beta.2",
+    "orbit-core": "^0.8.0-beta.3",
+    "orbit-indexeddb": "^0.8.0-beta.1",
+    "orbit-jsonapi": "^0.8.0-beta.3",
     "orbit-local-storage": "^0.8.0-beta.1"
   }
 }
