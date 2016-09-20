@@ -1,29 +1,11 @@
-import Orbit from 'orbit';
-// import Coordinator from 'orbit/coordinator';
-import JSONAPISource from 'orbit-jsonapi/jsonapi-source';
-// import LocalStorageSource from 'orbit-local-storage/local-storage-source';
-import IndexedDBSource from 'orbit-indexeddb/indexeddb-source';
-import IndexedDBBucket from 'orbit-indexeddb/indexeddb-bucket';
 import {
   ClientError,
   NetworkError
 } from 'orbit/lib/exceptions';
-import fetch from 'ember-network/fetch';
 
 export function initialize(appInstance) {
-  Orbit.fetch = fetch;
-
-  let bucket = new IndexedDBBucket({ dbName: 'peeps-bucket' });
-
-  let storeService = appInstance.lookup('service:store');
-  let store = storeService.orbitStore;
-  let schema = store.schema;
-  // let backup = new LocalStorageSource({ schema, namespace: 'peeps' });
-  let backup = new IndexedDBSource({ schema, bucket, dbName: 'peeps' });
-  let remote = new JSONAPISource({ schema, bucket, keyMap: store.keyMap });
-
-  appInstance.register('data-source:backup', backup, { instantiate: false });
-  appInstance.register('data-source:remote', remote, { instantiate: false });
+  let store = appInstance.lookup('service:store');
+  let remote = appInstance.lookup('data-source:remote');
 
   store.on('transform', transform => console.log(transform));
 
@@ -55,11 +37,6 @@ export function initialize(appInstance) {
 
   // Sync remote changes with the store
   remote.on('transform', transform => { store.sync(transform); });
-
-  // let coordinator = appInstance.lookup('service:coordinator');
-  // coordinator.addSource(store);
-  // coordinator.addSource(backup);
-  // coordinator.addSource(remote);
 }
 
 export default {
