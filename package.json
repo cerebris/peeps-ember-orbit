@@ -42,8 +42,8 @@
     "ember-orbit": "git://github.com/orbitjs/ember-orbit#master",
     "ember-resolver": "^2.0.3",
     "loader.js": "^4.0.1",
-    "orbit-indexeddb": "^0.8.0-beta.3",
+    "orbit-indexeddb": "^0.8.0-beta.5",
     "orbit-jsonapi": "^0.8.0-beta.5",
-    "orbit-local-storage": "^0.8.0-beta.2"
+    "orbit-local-storage": "^0.8.0-beta.4"
   }
 }

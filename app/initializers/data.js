@@ -2,9 +2,8 @@ import Orbit from 'orbit';
 import Source from 'ember-orbit/source';
 import Bucket from 'ember-orbit/bucket';
 import JSONAPISource from 'orbit-jsonapi/jsonapi-source';
-// import LocalStorageSource from 'orbit-local-storage/local-storage-source';
-import IndexedDBSource from 'orbit-indexeddb/indexeddb-source';
-import IndexedDBBucket from 'orbit-indexeddb/indexeddb-bucket';
+import { LocalStorageSource, LocalStorageBucket } from 'orbit-local-storage';
+import { IndexedDBSource, IndexedDBBucket, supportsIndexedDB } from 'orbit-indexeddb';
 import fetch from 'ember-network/fetch';
 
 const RemoteSource = Source.extend({
@@ -12,12 +11,12 @@ const RemoteSource = Source.extend({
 });
 
 const BackupSource = Source.extend({
-  OrbitSourceClass: IndexedDBSource,
+  OrbitSourceClass: supportsIndexedDB ? IndexedDBSource : LocalStorageSource,
   orbitSourceOptions: { namespace: 'peeps' }
 });
 
 const SettingsBucket = Bucket.extend({
-  OrbitBucketClass: IndexedDBBucket,
+  OrbitBucketClass: supportsIndexedDB ? IndexedDBBucket : LocalStorageBucket,
   orbitBucketOptions: { namespace: 'peeps-settings' }
 });
 
