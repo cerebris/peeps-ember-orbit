@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import qb from 'orbit/query/builder';
+import { QueryBuilder as qb } from '@orbit/core';
 
 export default Ember.Component.extend({
   store: Ember.inject.service(),

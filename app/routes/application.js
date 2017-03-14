@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import qb from 'orbit/query/builder';
+import { QueryBuilder as qb } from '@orbit/core';
 
 const { getOwner } = Ember;
 

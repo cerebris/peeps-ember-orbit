@@ -1,10 +1,12 @@
 import Ember from 'ember';
-import qb from 'orbit/query/builder';
+import { 
+  QueryBuilder as qb
+} from '@orbit/core';
 
 export default Ember.Route.extend({
   model() {
-    // return this.store.liveQuery(qb.records('contact').filterAttributes({ lastName: 'Gebhardt' }));
-
-    return this.store.liveQuery(qb.records('contact'));
+    // let query = qb.records('contact').filterAttributes({ lastName: 'Gebhardt' }).sort('lastName', 'firstName');
+    let query = qb.records('contact').sort('lastName', 'firstName');
+    return this.store.liveQuery(query);
   }
 });

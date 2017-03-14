@@ -1,7 +1,7 @@
 import {
   ClientError,
   NetworkError
-} from 'orbit/lib/exceptions';
+} from '@orbit/core';
 
 export function initialize(appInstance) {
   let store = appInstance.lookup('service:store');
