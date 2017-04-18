@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { 
-  QueryBuilder as qb
-} from '@orbit/core';
+  oqb
+} from '@orbit/data';
 
 export default Ember.Route.extend({
   model() {

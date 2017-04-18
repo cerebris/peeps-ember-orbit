@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { QueryBuilder as qb } from '@orbit/core';
+import { oqb } from '@orbit/data';
 
 const { getOwner } = Ember;
 
@@ -10,7 +10,7 @@ export default Ember.Route.extend({
     const store = owner.lookup('service:store');
 
     // Warm the store's cache from backup
-    return backup.pull(qb.records())
+    return backup.pull(oqb.records())
       .then(transform => store.sync(transform))
       .then(() => {
         // Backup subsequent changes to the store

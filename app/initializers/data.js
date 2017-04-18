@@ -1,9 +1,11 @@
-import Orbit from '@orbit/core';
+import Orbit from '@orbit/data';
 import Source from 'ember-orbit/source';
 import Bucket from 'ember-orbit/bucket';
-import { JSONAPISource } from '@orbit/jsonapi';
-import { LocalStorageSource, LocalStorageBucket } from '@orbit/local-storage';
-import { IndexedDBSource, IndexedDBBucket, supportsIndexedDB } from '@orbit/indexeddb';
+import JSONAPISource from '@orbit/jsonapi';
+import LocalStorageSource from '@orbit/local-storage';
+import LocalStorageBucket from '@orbit/local-storage-bucket';
+import IndexedDBSource, { supportsIndexedDB } from '@orbit/indexeddb';
+import IndexedDBBucket from '@orbit/indexeddb-bucket';
 import fetch from 'ember-network/fetch';
 
 const RemoteSource = Source.extend({

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { QueryBuilder as qb } from '@orbit/core';
+import { oqb } from '@orbit/data';
 
 export default Ember.Component.extend({
   store: Ember.inject.service(),
@@ -18,7 +18,7 @@ export default Ember.Component.extend({
 
     } else {
       let storeModel = this.get('storeModel');
-      let model = this.forkedStore.cache.query(qb.record(storeModel));
+      let model = this.forkedStore.cache.query(oqb.record(storeModel));
       this.set('model', model);
     }
   },
@@ -44,10 +44,10 @@ export default Ember.Component.extend({
 
     save() {
       this.get('store')
-        .merge(this.forkedStore)
+        .merge(this.forkedStore, { transformOptions: { label: 'Save contact' }})
         .then(() => {
           let model = this.get('model');
-          let storeModel = this.get('store').cache.query(qb.record(model));
+          let storeModel = this.get('store').cache.query(oqb.record(model), { label: 'Find contact' });
           this.sendAction('success', storeModel);
         });
     },

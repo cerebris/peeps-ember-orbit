@@ -1,7 +1,7 @@
 import {
   ClientError,
   NetworkError
-} from '@orbit/core';
+} from '@orbit/data';
 
 export function initialize(appInstance) {
   let store = appInstance.lookup('service:store');
@@ -15,7 +15,34 @@ export function initialize(appInstance) {
     remote.push(transform);
   });
 
+  store.on('beforeQuery', query => {
+    remote.pull(query)
+      .then(() => {
+        console.log('pull success', query.id);
+      })
+      .catch((e) => {
+        console.log('pull error', query.id, e);
+      });
+  });
+
   // Handle server errors
+  remote.on('beforePull', (query) => {
+    console.log('beforePull', query);
+  });
+
+  remote.on('pullFail', (query, e) => {
+    console.log('pullFail', query.id, e);
+
+    if (e instanceof NetworkError) {
+      // When network errors are encountered, try again in 5s
+      console.log('NetworkError - query:', query.id);
+    } else if (e instanceof ClientError) {
+      console.log('ClientError - query:', query.id);
+    }
+
+    remote.requestQueue.skip();
+  });
+
   remote.on('pushFail', (transform, e) => {
     console.log('pushFail', transform.id, e);
 

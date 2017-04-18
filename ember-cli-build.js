@@ -1,15 +1,17 @@
 /*jshint node:true*/
 /* global require, module */
-var EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function(defaults) {
-  var app = new EmberApp(defaults, {
-    // Add options here
+  const app = new EmberApp(defaults, {
+    // Orbit-specific options
     orbit: {
-      sources: [
+      packages: [
         '@orbit/jsonapi',
         '@orbit/indexeddb',
-        '@orbit/local-storage'
+        '@orbit/local-storage',
+        '@orbit/indexeddb-bucket',
+        '@orbit/local-storage-bucket'
       ]
     }
   });
