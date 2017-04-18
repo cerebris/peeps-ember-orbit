@@ -12,7 +12,11 @@
     </ul>
   </div>
 
-  <div class="col-sm-9">
+  <div class="col-sm-7">
     {{outlet "detail"}}
+  </div>
+
+  <div class="col-sm-2">
+    {{request-queue sourceName="remote"}}
   </div>
 </div>

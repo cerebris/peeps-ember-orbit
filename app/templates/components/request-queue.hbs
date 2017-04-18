@@ -1,0 +1,9 @@
+<h3>Requests ({{requests.length}})</h3>
+
+<button {{action "clear"}}>Clear</button>
+
+<ul>
+{{#each requests as |request|}}
+  <li>{{request.data.options.label}}</li>
+{{/each}}
+</ul>
