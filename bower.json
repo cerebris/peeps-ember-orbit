@@ -1,8 +1,0 @@
-{
-  "name": "peeps-ember-orbit",
-  "private": true,
-  "dependencies": {
-    "bootstrap": "^3.3.7",
-    "js-md5": "~1.1.0"
-  }
-}

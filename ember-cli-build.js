@@ -13,10 +13,16 @@ module.exports = function(defaults) {
         '@orbit/indexeddb-bucket',
         '@orbit/local-storage-bucket'
       ]
+    },
+
+    'ember-bootstrap': {
+      'bootstrapVersion': 4,
+      'importBootstrapFont': false,
+      'importBootstrapCSS': false
     }
   });
 
-  app.import(app.bowerDirectory + '/js-md5/js/md5.js');
+  app.import('vendor/md5.js');
 
   return app.toTree();
 };

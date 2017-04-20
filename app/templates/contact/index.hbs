@@ -1,17 +1,25 @@
-{{gravatar-image email=model.email}}
 
-<h2>{{model.fullName}}</h2>
+<div class="full-contact card">
+  <div class="card-block">
+    <h2 class="d-flex justify-content-start align-items-center">
+      {{gravatar-image email=model.email}}
+      {{model.fullName}}
+    </h2>
+  </div>
 
-{{#if model.phoneNumbers}}
-  <h3>Phone numbers</h3>
-  <ul class="phone-numbers">
-    {{#each model.phoneNumbers as |phoneNumber|}}
-      <li>{{phoneNumber.phoneNumber}}</li>
-    {{/each}}
-  </ul>
-{{/if}}
+  {{#if model.phoneNumbers}}
+    <div class="card-block">
+      <h4 class="card-title">Phone numbers</h4>
+      <ul class="phone-numbers">
+        {{#each model.phoneNumbers as |phoneNumber|}}
+          <li>{{phoneNumber.phoneNumber}}</li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/if}}
 
-<div class="well well-small">
-  <a class="btn btn-default" type="button" {{action 'edit'}}>Edit</a>
-  <a class="btn btn-danger" type="button" {{action 'remove'}}>Remove</a>
+  <div class="card-block">
+    <a class="btn btn-secondary" {{action 'edit'}}>Edit</a>
+    <a class="btn btn-secondary" {{action 'remove'}}>Remove</a>
+  </div>
 </div>

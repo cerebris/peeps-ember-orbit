@@ -16,17 +16,17 @@
   },
   "repository": "",
   "devDependencies": {
-    "@orbit/jsonapi": "^0.8.0-beta.11",
     "@orbit/indexeddb": "^0.8.0-beta.11",
-    "@orbit/local-storage": "^0.8.0-beta.11",
     "@orbit/indexeddb-bucket": "^0.8.0-beta.11",
+    "@orbit/jsonapi": "^0.8.0-beta.11",
+    "@orbit/local-storage": "^0.8.0-beta.11",
     "@orbit/local-storage-bucket": "^0.8.0-beta.11",
     "bootstrap": "^4.0.0-alpha.6",
     "broccoli-asset-rev": "^2.4.5",
     "broccoli-funnel": "^1.1.0",
     "broccoli-merge-trees": "^1.1.1",
     "broccoli-replace": "^0.12.0",
-    "ember-bootstrap": "1.0.0-alpha.5",
+    "ember-bootstrap": "1.0.0-alpha.10",
     "ember-cli": "2.12.1",
     "ember-cli-app-version": "^2.0.0",
     "ember-cli-babel": "^5.1.7",
@@ -37,6 +37,7 @@
     "ember-cli-jshint": "^2.0.1",
     "ember-cli-qunit": "^3.0.1",
     "ember-cli-release": "^0.2.9",
+    "ember-cli-sass": "^6.1.2",
     "ember-cli-shims": "^1.0.2",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-test-loader": "^1.1.0",
@@ -50,6 +51,6 @@
     "loader.js": "^4.0.10"
   },
   "engines": {
-    "npm": ">= 3.0.0"
+    "npm": ">= 6.0.0"
   }
 }

@@ -1,13 +1,20 @@
 <div class="row">
-  <div class="col-sm-3 sidebar">
-    <h3>All contacts ({{model.length}})</h3>
-    <ul class="nav nav-pills nav-stacked">
+  <div class="col-sm-3 bd-sidebar" id="contacts-sidebar">
+    <div class="container">
+      <h4 class="d-flex justify-content-between">
+        All contacts
+        {{#link-to "contacts.new" type="button" class="btn btn-secondary btn-sm"}}
+          Add
+        {{/link-to}}
+      </h4>
+    </div>
+    <ul class="nav flex-column list-group nav-pills nav-fill" id="contact-listing">
       {{#each model as |contact|}}
-        {{#link-to "contact" contact tagName="li"}}
-          {{#link-to "contact" contact}}
+        <li class="nav-item">
+          {{#link-to "contact" contact class="nav-link"}}
             {{contact.fullName}}
           {{/link-to}}
-        {{/link-to}}
+        </li>
       {{/each}}
     </ul>
   </div>
@@ -16,7 +23,7 @@
     {{outlet "detail"}}
   </div>
 
-  <div class="col-sm-2">
+  <div class="col-sm-2 bd-sidebar">
     {{request-queue sourceName="remote"}}
   </div>
 </div>

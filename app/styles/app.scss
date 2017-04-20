@@ -1,0 +1,34 @@
+
+@import "ember-bootstrap/bootstrap";
+
+header {
+  background: #eee;
+}
+header.navbar {
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 1.5rem;
+}
+#contacts-sidebar {
+  h3 {
+    margin-bottom: 1rem;
+  }
+  #contact-listing {
+    margin-bottom: 1rem;
+    a {
+      text-align: left;
+    }
+  }
+}
+.sidebar {
+  margin-bottom: 1rem;
+}
+.full-contact {
+  h2 {
+    font-size: 1.8rem;
+  }
+  img.gravatar {
+    height: 70px;
+    width: 70px;
+    margin-right: 1rem;
+  }
+}
