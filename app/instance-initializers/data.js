@@ -15,6 +15,12 @@ export function initialize(appInstance) {
     remote.push(transform);
   });
 
+  // Optimistic flow
+  // 1. store.query
+  // beforeQuery -> 2. remote.pull
+  // transform -> 4. store.sync
+  // 3. return store.cache.query
+
   store.on('beforeQuery', query => {
     remote.pull(query)
       .then(() => {
@@ -25,16 +31,15 @@ export function initialize(appInstance) {
       });
   });
 
-  // Handle server errors
   remote.on('beforePull', (query) => {
     console.log('beforePull', query);
   });
 
+  // Handle server errors
   remote.on('pullFail', (query, e) => {
     console.log('pullFail', query.id, e);
 
     if (e instanceof NetworkError) {
-      // When network errors are encountered, try again in 5s
       console.log('NetworkError - query:', query.id);
     } else if (e instanceof ClientError) {
       console.log('ClientError - query:', query.id);
@@ -63,7 +68,9 @@ export function initialize(appInstance) {
   });
 
   // Sync remote changes with the store
-  remote.on('transform', transform => { store.sync(transform); });
+  remote.on('transform', transform => { 
+    store.sync(transform); 
+  });
 }
 
 export default {

@@ -33,9 +33,9 @@ export default Ember.Component.extend({
         .addRecord({type: 'phoneNumber'})
         .then((phoneNumber) => {
           this.get('model.phoneNumbers').pushObject(phoneNumber);
-          self.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
             this.$('input.phone-number:last').focus();
-          })
+          });
         });
     },
 

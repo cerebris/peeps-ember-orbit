@@ -17,13 +17,15 @@
         </li>
       {{/each}}
     </ul>
+
+    <button class="btn btn-secondary btn-block" {{action "clearAll"}}>Clear All Local Data</button>
   </div>
 
-  <div class="col-sm-7">
+  <div class="col-sm-6">
     {{outlet "detail"}}
   </div>
 
-  <div class="col-sm-2 bd-sidebar">
-    {{request-queue sourceName="remote"}}
+  <div class="col-sm-3 bd-sidebar">
+    {{orbit-inspector}}
   </div>
 </div>

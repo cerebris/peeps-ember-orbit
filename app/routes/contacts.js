@@ -5,8 +5,14 @@ import {
 
 export default Ember.Route.extend({
   model() {
-    // let query = oqb.records('contact').filterAttributes({ lastName: 'Gebhardt' }).sort('lastName', 'firstName');
     let query = oqb.records('contact').sort('lastName', 'firstName');
-    return this.store.liveQuery(query, { label: 'Find contacts' });
+    return this.store.liveQuery(query, {
+      label: 'Find all contacts',
+      sources: {
+        remote: {
+          include: ['phone-numbers']
+        }
+      }
+    });
   }
 });

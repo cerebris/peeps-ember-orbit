@@ -1,0 +1,102 @@
+import Ember from 'ember';
+
+const { computed, get, getOwner, set } = Ember;
+
+// const Queue = Ember.Object.extend({
+//   changeEvent: null,
+
+//   source: computed({
+//     set(key, source) {
+
+//     }
+//   })
+// });
+
+export default Ember.Component.extend({
+  sources: null,
+  queues: null,
+
+  requestQueueLength: 0,
+  syncQueueLength: 0,
+  transformLogLength: 0,
+
+  init() {
+    this._super();
+
+    let owner = getOwner(this);
+    
+    let sources = [
+      owner.lookup('service:store'),
+      owner.lookup('data-source:backup'),
+      owner.lookup('data-source:remote')
+    ];
+
+    set(this, 'sources', sources);
+    set(this, 'activeSource', sources[0]);
+  },
+
+  sourceNames: computed({
+    get() {
+      return Object.keys(this.sources);
+    }
+  }),
+
+  activeSource: computed({
+    set(key, source) {
+      set(this, 'requestQueueLength', source.requestQueue.length);
+      set(this, 'syncQueueLength', source.syncQueue.length);
+      set(this, 'transformLogLength', source.transformLog.length)
+
+      if (this._prevSource) {
+        this._prevSource.requestQueue.off('change', this._requestQueueChange, this);
+        this._prevSource.syncQueue.off('change', this._syncQueueChange, this);
+      }
+      source.requestQueue.on('change', this._requestQueueChange, this);
+      source.syncQueue.on('change', this._syncQueueChange, this);
+      source.transformLog.on('change', this._transformLogChange, this);
+
+      this._prevSource = source;
+
+      return source;
+    }
+  }),
+
+  requestQueueEntries: computed('requestQueueLength', {
+    get() {
+      return get(this, 'activeSource.requestQueue.entries').slice().reverse();
+    }
+  }),
+
+  _requestQueueChange() {
+    let source = get(this, 'activeSource');
+    set(this, 'requestQueueLength', source.requestQueue.length);
+  },
+
+  syncQueueEntries: computed('syncQueueLength', {
+    get() {
+      return get(this, 'activeSource.syncQueue.entries').slice().reverse();
+    }
+  }),
+
+  _transformLogChange() {
+    let source = get(this, 'activeSource');
+    set(this, 'transformLogLength', source.transformLog.length);
+  },
+
+  transformLogEntries: computed('transformLogLength', {
+    get() {
+      return get(this, 'activeSource.transformLog.entries').slice().reverse();
+    }
+  }),
+
+  _syncQueueChange() {
+    let source = get(this, 'activeSource');
+    set(this, 'syncQueueLength', source.syncQueue.length);
+  },
+
+  actions: {
+    switchSource(source) {
+      set(this, 'activeSource', source);
+    } 
+  }
+});

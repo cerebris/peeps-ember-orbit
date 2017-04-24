@@ -9,12 +9,13 @@ import IndexedDBBucket from '@orbit/indexeddb-bucket';
 import fetch from 'ember-network/fetch';
 
 const RemoteSource = Source.extend({
-  OrbitSourceClass: JSONAPISource
+  OrbitSourceClass: JSONAPISource,
+  orbitSourceOptions: { name: 'remote' }
 });
 
 const BackupSource = Source.extend({
   OrbitSourceClass: supportsIndexedDB ? IndexedDBSource : LocalStorageSource,
-  orbitSourceOptions: { namespace: 'peeps' }
+  orbitSourceOptions: { name: 'backup', namespace: 'peeps' }
 });
 
 const SettingsBucket = Bucket.extend({

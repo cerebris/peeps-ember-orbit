@@ -8,7 +8,7 @@ export default Ember.Controller.extend({
 
     remove() {
       this.get('model')
-        .remove()
+        .remove({ label: 'Remove contact' })
         .then(() => this.transitionToRoute('contacts.index'));
     }
   }

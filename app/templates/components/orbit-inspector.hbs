@@ -1,0 +1,40 @@
+<div class="inspector">
+  <h4>Orbit Sources</h4>
+
+  <div class="btn-group" role="group">
+    {{#each sources as |source|}}
+      <button type="button" 
+              class="btn btn-secondary {{if (eq activeSource source) "active"}}"
+              {{action "switchSource" source}}>
+        {{source.orbitSource.name}}
+      </button>
+    {{/each}}
+  </div>
+
+  <h6>Request queue ({{requestQueueLength}})</h6>
+  <div class="queue">
+    <ul>
+    {{#each requestQueueEntries as |entry|}}
+      <li>{{entry.data.options.label}}</li>
+    {{/each}}
+    </ul>
+  </div>
+
+  <h6>Sync queue ({{syncQueueLength}})</h6>
+  <div class="queue">
+    <ul>
+    {{#each syncQueueEntries as |entry|}}
+      <li>{{entry.data.options.label}}</li>
+    {{/each}}
+    </ul>
+  </div>
+
+  <h6>Transform log ({{transformLogLength}})</h6>
+  <div class="queue">
+    <ul>
+    {{#each transformLogEntries as |entry|}}
+      <li>{{entry}}</li>
+    {{/each}}
+    </ul>
+  </div>
+</div>

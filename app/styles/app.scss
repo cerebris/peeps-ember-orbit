@@ -32,3 +32,25 @@ header.navbar {
     margin-right: 1rem;
   }
 }
+.inspector {
+  .queue {
+    height: 7rem;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    ul {
+        padding: 0 0.3rem;
+
+      li {
+        padding-left: 0;
+        list-style-type: none;
+        border-bottom: 1px solid #ccc;
+        text-overflow: clip ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .btn-group, .queue {
+    margin-bottom: 1rem;
+  }
+}
