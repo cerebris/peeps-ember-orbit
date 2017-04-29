@@ -1,13 +1,14 @@
 import Ember from 'ember';
 import { oqb } from '@orbit/data';
 
-const { getOwner } = Ember;
+const { get, inject, Route } = Ember;
 
-export default Ember.Route.extend({
+export default Route.extend({
+  dataCoordinator: inject.service(),
+
   beforeModel() {
-    const owner = getOwner(this);
-    const backup = owner.lookup('data-source:backup');
-    const store = owner.lookup('service:store');
+    const backup = get(this, 'dataCoordinator').sources['backup'];
+    const store = this.store;
 
     // Warm the store's cache from backup
     return backup.pull(oqb.records())

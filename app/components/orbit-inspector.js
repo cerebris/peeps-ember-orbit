@@ -1,20 +1,10 @@
 import Ember from 'ember';
 
-const { computed, get, getOwner, set } = Ember;
-
-// const Queue = Ember.Object.extend({
-//   changeEvent: null,
-
-//   source: computed({
-//     set(key, source) {
-
-//     }
-//   })
-// });
+const { computed, get, set } = Ember;
 
 export default Ember.Component.extend({
-  sources: null,
   queues: null,
+  dataCoordinator: Ember.inject.service(),
 
   requestQueueLength: 0,
   syncQueueLength: 0,
@@ -23,21 +13,19 @@ export default Ember.Component.extend({
   init() {
     this._super();
 
-    let owner = getOwner(this);
-    
-    let sources = [
-      owner.lookup('service:store'),
-      owner.lookup('data-source:backup'),
-      owner.lookup('data-source:remote')
-    ];
-
-    set(this, 'sources', sources);
+    let sources = get(this, 'sources');
     set(this, 'activeSource', sources[0]);
   },
 
+  sources: computed({
+    get() {
+      return Object.values(get(this, 'dataCoordinator.sources'));
+    }
+  }),
+
   sourceNames: computed({
     get() {
-      return Object.keys(this.sources);
+      return Object.keys(get(this, 'dataCoordinator.sources'));
     }
   }),
 
@@ -45,7 +33,7 @@ export default Ember.Component.extend({
     set(key, source) {
       set(this, 'requestQueueLength', source.requestQueue.length);
       set(this, 'syncQueueLength', source.syncQueue.length);
-      set(this, 'transformLogLength', source.transformLog.length)
+      set(this, 'transformLogLength', source.transformLog.length);
 
       if (this._prevSource) {
         this._prevSource.requestQueue.off('change', this._requestQueueChange, this);

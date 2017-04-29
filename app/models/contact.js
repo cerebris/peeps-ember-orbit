@@ -1,7 +1,9 @@
 import Ember from 'ember';
-import Model from 'ember-orbit/model';
-import attr from 'ember-orbit/fields/attr';
-import hasMany from 'ember-orbit/fields/has-many';
+import { 
+  Model,
+  attr,
+  hasMany 
+} from 'ember-orbit';
 
 export default Model.extend({
   firstName: attr('string'),

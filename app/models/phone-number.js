@@ -1,6 +1,8 @@
-import Model from 'ember-orbit/model';
-import attr from 'ember-orbit/fields/attr';
-import hasOne from 'ember-orbit/fields/has-one';
+import { 
+  Model,
+  attr,
+  hasOne 
+} from 'ember-orbit';
 
 export default Model.extend({
   name: attr('string'),

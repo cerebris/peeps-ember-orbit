@@ -1,30 +1,30 @@
 import Ember from 'ember';
 
-const { getOwner } = Ember;
+const { get } = Ember;
 
 export default Ember.Controller.extend({
+  dataCoordinator: Ember.inject.service(),
+
   actions: {
     clearAll() {
-      const owner = getOwner(this);
+      const coordinator = get(this, 'dataCoordinator');
 
-      let store = owner.lookup('service:store');
-      let backup = owner.lookup('data-source:backup');
-      let remote = owner.lookup('data-source:remote');
+      let store = coordinator.sources['store'];
+      let backup = coordinator.sources['backup'];
+      let remote = coordinator.sources['remote'];
 
       [store, backup, remote].forEach(source => {
-        let orbitSource = source.orbitSource;
-
-        orbitSource.transformLog.clear();
-        orbitSource.requestQueue.clear();
-        orbitSource.syncQueue.clear();
+        source.transformLog.clear();
+        source.requestQueue.clear();
+        source.syncQueue.clear();
       });
 
-      backup.orbitSource.deleteDB()
+      backup.deleteDB()
         .then(() => {
-          backup.orbitSource.openDB()
+          backup.openDB();
         })
         .then(() => {
-          store.orbitSource.cache.reset();
+          store.cache.reset();
           this.transitionToRoute('index');
         });
     }

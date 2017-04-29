@@ -6,7 +6,7 @@
       <button type="button" 
               class="btn btn-secondary {{if (eq activeSource source) "active"}}"
               {{action "switchSource" source}}>
-        {{source.orbitSource.name}}
+        {{source.name}}
       </button>
     {{/each}}
   </div>

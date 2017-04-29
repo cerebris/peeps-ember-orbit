@@ -1,11 +1,31 @@
-import {
+import Orbit, {
   ClientError,
   NetworkError
 } from '@orbit/data';
+import JSONAPISource from '@orbit/jsonapi';
+import LocalStorageSource from '@orbit/local-storage';
+import LocalStorageBucket from '@orbit/local-storage-bucket';
+import IndexedDBSource, { supportsIndexedDB } from '@orbit/indexeddb';
+import IndexedDBBucket from '@orbit/indexeddb-bucket';
+import fetch from 'ember-network/fetch';
 
 export function initialize(appInstance) {
+  Orbit.fetch = fetch;
+
   let store = appInstance.lookup('service:store');
-  let remote = appInstance.lookup('data-source:remote');
+  let coordinator = appInstance.lookup('service:data-coordinator');
+  let schema = appInstance.lookup('service:data-schema');
+  let keyMap = appInstance.lookup('service:data-key-map');
+
+  let BucketClass = supportsIndexedDB ? IndexedDBBucket : LocalStorageBucket;
+  let bucket = new BucketClass({ namespace: 'peeps-settings' });
+
+  let BackupClass = supportsIndexedDB ? IndexedDBSource : LocalStorageSource;
+  let backup = new BackupClass({ name: 'backup', namespace: 'peeps', bucket, keyMap, schema });
+  let remote = new JSONAPISource({ name: 'remote', bucket, keyMap, schema });
+
+  coordinator.addSource(backup);
+  coordinator.addSource(remote);
 
   store.on('transform', transform => console.log(transform));
 
@@ -14,12 +34,6 @@ export function initialize(appInstance) {
     console.log('store updated, will push to remote - transform:', transform, 'queue backlog:', remote.requestQueue.length);
     remote.push(transform);
   });
-
-  // Optimistic flow
-  // 1. store.query
-  // beforeQuery -> 2. remote.pull
-  // transform -> 4. store.sync
-  // 3. return store.cache.query
 
   store.on('beforeQuery', query => {
     remote.pull(query)
