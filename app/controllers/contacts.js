@@ -9,23 +9,29 @@ export default Ember.Controller.extend({
     clearAll() {
       const coordinator = get(this, 'dataCoordinator');
 
-      let store = coordinator.sources['store'];
-      let backup = coordinator.sources['backup'];
-      let remote = coordinator.sources['remote'];
+      let store = coordinator.getSource('store');
+      let backup = coordinator.getSource('backup');
+      let remote = coordinator.getSource('remote');
 
-      [store, backup, remote].forEach(source => {
-        source.transformLog.clear();
-        source.requestQueue.clear();
-        source.syncQueue.clear();
-      });
+      coordinator.deactivate()
+        .then(() => {
+          [store, backup, remote].forEach(source => {
+            source.transformLog.clear();
+            source.requestQueue.clear();
+            source.syncQueue.clear();
+          });
 
-      backup.deleteDB()
-        .then(() => {
-          backup.openDB();
-        })
-        .then(() => {
-          store.cache.reset();
-          this.transitionToRoute('index');
+          return backup.deleteDB()
+            .then(() => {
+              backup.openDB();
+            })
+            .then(() => {
+              store.cache.reset();
+              return coordinator.activate();
+            })
+            .then(() => {
+              this.transitionToRoute('index');
+            });
         });
     }
   }

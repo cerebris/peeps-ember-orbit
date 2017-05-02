@@ -2,6 +2,12 @@ import Orbit, {
   ClientError,
   NetworkError
 } from '@orbit/data';
+import {
+  EventLoggingStrategy,
+  LogTruncationStrategy,
+  RequestStrategy,
+  SyncStrategy
+} from '@orbit/coordinator';
 import JSONAPISource from '@orbit/jsonapi';
 import LocalStorageSource from '@orbit/local-storage';
 import LocalStorageBucket from '@orbit/local-storage-bucket';
@@ -24,70 +30,88 @@ export function initialize(appInstance) {
   let backup = new BackupClass({ name: 'backup', namespace: 'peeps', bucket, keyMap, schema });
   let remote = new JSONAPISource({ name: 'remote', bucket, keyMap, schema });
 
+  // Add new sources to the coordinator
   coordinator.addSource(backup);
   coordinator.addSource(remote);
 
-  store.on('transform', transform => console.log(transform));
+  // Log all events
+  coordinator.addStrategy(new EventLoggingStrategy());
+
+  // Truncate logs as possible
+  coordinator.addStrategy(new LogTruncationStrategy());
+
+  // Sync all remote changes with the store
+  coordinator.addStrategy(new SyncStrategy({
+    source: 'remote',
+    target: 'store',
+    blocking: false
+  }));
+
+  // Backup all store changes (by making this strategy blocking we ensure that
+  // the store can't change without the change also being backed up).
+  coordinator.addStrategy(new SyncStrategy({
+    source: 'store',
+    target: 'backup',
+    blocking: true
+  }));
 
   // Push update requests to the server
-  store.on('update', transform => {
-    console.log('store updated, will push to remote - transform:', transform, 'queue backlog:', remote.requestQueue.length);
-    remote.push(transform);
-  });
+  coordinator.addStrategy(new RequestStrategy({
+    source: 'store',
+    on: 'update',
 
-  store.on('beforeQuery', query => {
-    remote.pull(query)
-      .then(() => {
-        console.log('pull success', query.id);
-      })
-      .catch((e) => {
-        console.log('pull error', query.id, e);
-      });
-  });
+    target: 'remote',
+    action: 'push',
 
-  remote.on('beforePull', (query) => {
-    console.log('beforePull', query);
-  });
+    blocking: true
+  }));
 
-  // Handle server errors
-  remote.on('pullFail', (query, e) => {
-    console.log('pullFail', query.id, e);
+  // Pull query results from the server
+  coordinator.addStrategy(new RequestStrategy({
+    source: 'store',
+    on: 'beforeQuery',
 
-    if (e instanceof NetworkError) {
-      console.log('NetworkError - query:', query.id);
-    } else if (e instanceof ClientError) {
-      console.log('ClientError - query:', query.id);
+    target: 'remote',
+    action: 'pull',
+
+    blocking: false
+  }));
+
+  // Remove pull requests from the remote queue when they fail
+  coordinator.addStrategy(new RequestStrategy({
+    source: 'remote',
+    on: 'pullFail',
+
+    action: function(query, e) {
+      this.source.requestQueue.skip();
     }
+  }));
 
-    remote.requestQueue.skip();
-  });
+  // Handle push failures with a custom strategy
+  coordinator.addStrategy(new RequestStrategy({
+    source: 'remote',
+    on: 'pushFail',
 
-  remote.on('pushFail', (transform, e) => {
-    console.log('pushFail', transform.id, e);
-
-    if (e instanceof NetworkError) {
-      // When network errors are encountered, try again in 5s
-      console.log('NetworkError - will try again soon - transform:', transform.id);
-      setTimeout(() => {
-        remote.requestQueue.retry();
-      }, 5000);
-    } else if (e instanceof ClientError) {
-      // Roll back client errors
-      if (store.transformLog.contains(transform.id)) {
-        console.log('Rolling back - transform:', transform.id);
-        store.rollback(transform.id, -1);
-        remote.requestQueue.clear();
+    action: function(transform, e) {
+      if (e instanceof NetworkError) {
+        // When network errors are encountered, try again in 5s
+        console.log('NetworkError - will try again soon - transform:', transform.id);
+        setTimeout(() => {
+          remote.requestQueue.retry();
+        }, 5000);
+      } else if (e instanceof ClientError) {
+        // Roll back client errors
+        if (store.transformLog.contains(transform.id)) {
+          console.log('Rolling back - transform:', transform.id);
+          store.rollback(transform.id, -1);
+          remote.requestQueue.clear();
+        }
       }
     }
-  });
-
-  // Sync remote changes with the store
-  remote.on('transform', transform => { 
-    store.sync(transform); 
-  });
+  }));
 }
 
 export default {
-  name: 'orbit',
+  name: 'data-configuration',
   initialize
 };

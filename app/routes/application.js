@@ -7,15 +7,13 @@ export default Route.extend({
   dataCoordinator: inject.service(),
 
   beforeModel() {
-    const backup = get(this, 'dataCoordinator').sources['backup'];
-    const store = this.store;
+    const coordinator = get(this, 'dataCoordinator');
+    const backup = coordinator.getSource('backup');
+    const store = coordinator.getSource('store');
 
-    // Warm the store's cache from backup
+    // Warm the store's cache from backup and then activate the coordinator
     return backup.pull(oqb.records())
       .then(transform => store.sync(transform))
-      .then(() => {
-        // Backup subsequent changes to the store
-        store.on('transform', transform => backup.sync(transform));
-      });
+      .then(() => coordinator.activate());
   }
 });
