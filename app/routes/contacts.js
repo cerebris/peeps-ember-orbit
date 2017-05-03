@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { 
+import {
   oqb
 } from '@orbit/data';
 

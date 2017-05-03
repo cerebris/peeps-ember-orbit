@@ -16,22 +16,32 @@ export default Ember.Controller.extend({
       coordinator.deactivate()
         .then(() => {
           [store, backup, remote].forEach(source => {
-            source.transformLog.clear();
-            source.requestQueue.clear();
-            source.syncQueue.clear();
+            if (source) {
+              source.transformLog.clear();
+              source.requestQueue.clear();
+              source.syncQueue.clear();
+            }
           });
 
-          return backup.deleteDB()
-            .then(() => {
-              backup.openDB();
-            })
-            .then(() => {
-              store.cache.reset();
-              return coordinator.activate();
-            })
-            .then(() => {
-              this.transitionToRoute('index');
-            });
+          if (backup) {
+            return backup.deleteDB()
+              .then(() => {
+                backup.openDB();
+              })
+              .then(() => {
+                store.cache.reset();
+                return coordinator.activate();
+              })
+              .then(() => {
+                this.transitionToRoute('index');
+              });
+          } else {
+            store.cache.reset();
+            return coordinator.activate()
+              .then(() => {
+                this.transitionToRoute('index');
+              });
+          }
         });
     }
   }

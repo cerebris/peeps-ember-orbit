@@ -16,6 +16,8 @@ import IndexedDBBucket from '@orbit/indexeddb-bucket';
 import fetch from 'ember-network/fetch';
 
 export function initialize(appInstance) {
+  let offlineMode = false;
+
   Orbit.fetch = fetch;
 
   let store = appInstance.lookup('service:store');
@@ -26,12 +28,9 @@ export function initialize(appInstance) {
   let BucketClass = supportsIndexedDB ? IndexedDBBucket : LocalStorageBucket;
   let bucket = new BucketClass({ namespace: 'peeps-settings' });
 
-  let BackupClass = supportsIndexedDB ? IndexedDBSource : LocalStorageSource;
-  let backup = new BackupClass({ name: 'backup', namespace: 'peeps', bucket, keyMap, schema });
   let remote = new JSONAPISource({ name: 'remote', bucket, keyMap, schema });
 
   // Add new sources to the coordinator
-  coordinator.addSource(backup);
   coordinator.addSource(remote);
 
   // Log all events
@@ -44,15 +43,7 @@ export function initialize(appInstance) {
   coordinator.addStrategy(new SyncStrategy({
     source: 'remote',
     target: 'store',
-    blocking: false
-  }));
-
-  // Backup all store changes (by making this strategy blocking we ensure that
-  // the store can't change without the change also being backed up).
-  coordinator.addStrategy(new SyncStrategy({
-    source: 'store',
-    target: 'backup',
-    blocking: true
+    blocking: !offlineMode
   }));
 
   // Push update requests to the server
@@ -63,7 +54,7 @@ export function initialize(appInstance) {
     target: 'remote',
     action: 'push',
 
-    blocking: true
+    blocking: !offlineMode
   }));
 
   // Pull query results from the server
@@ -74,7 +65,7 @@ export function initialize(appInstance) {
     target: 'remote',
     action: 'pull',
 
-    blocking: false
+    blocking: !offlineMode
   }));
 
   // Remove pull requests from the remote queue when they fail
@@ -82,7 +73,7 @@ export function initialize(appInstance) {
     source: 'remote',
     on: 'pullFail',
 
-    action: function(query, e) {
+    action() {
       this.source.requestQueue.skip();
     }
   }));
@@ -92,7 +83,7 @@ export function initialize(appInstance) {
     source: 'remote',
     on: 'pushFail',
 
-    action: function(transform, e) {
+    action(transform, e) {
       if (e instanceof NetworkError) {
         // When network errors are encountered, try again in 5s
         console.log('NetworkError - will try again soon - transform:', transform.id);
@@ -109,6 +100,23 @@ export function initialize(appInstance) {
       }
     }
   }));
+
+  // For offline support, add a backup source that syncs with the main store.
+  // The store will be populated from backup in the application route (since
+  // it's an async operation, it shouldn't be done in an initializer).
+  if (offlineMode) {
+    let BackupClass = supportsIndexedDB ? IndexedDBSource : LocalStorageSource;
+    let backup = new BackupClass({ name: 'backup', namespace: 'peeps', bucket, keyMap, schema });
+    coordinator.addSource(backup);
+
+    // Backup all store changes (by making this strategy blocking we ensure that
+    // the store can't change without the change also being backed up).
+    coordinator.addStrategy(new SyncStrategy({
+      source: 'store',
+      target: 'backup',
+      blocking: true
+    }));
+  }
 }
 
 export default {
