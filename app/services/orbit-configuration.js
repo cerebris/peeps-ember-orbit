@@ -46,7 +46,7 @@ export default Ember.Service.extend({
 
   initialize() {
     let mode = window.localStorage.getItem('peeps-mode') || 'offline-only';
-    this.configure(mode);
+    return this.configure(mode);
   },
 
   configure(mode) {
