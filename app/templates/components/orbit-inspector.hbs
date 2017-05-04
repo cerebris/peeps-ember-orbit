@@ -1,6 +1,5 @@
 <div class="inspector">
-  <h4>Configuration</h4>
-
+  <h3>Configuration</h3>
   <div class="btn-group-vertical" role="group">
     {{#each configurationModes as |mode|}}
       <button type="button"
@@ -11,7 +10,11 @@
     {{/each}}
   </div>
 
-  <h4>Orbit Sources</h4>
+  <p class="note">
+    Note: In this demo, changing configurations will clear the contents of all local sources.
+  </p>
+
+  <h3>Orbit Sources</h3>
 
   <div class="btn-group" role="group">
     {{#each sources as |source|}}

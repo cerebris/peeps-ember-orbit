@@ -30,10 +30,10 @@ export default Ember.Service.extend({
   bucket: null,
 
   availableModes: [
-    { id: 'memory-only', description: 'Memory only' },
-    { id: 'offline-only', description: 'Offline only' },
-    { id: 'pessimistic-server', description: 'Pessimistic (blocking)' },
-    { id: 'optimistic-server', description: 'Optimistic (non-blocking)' }
+    { id: 'memory-only', description: 'store' },
+    { id: 'offline-only', description: 'store + backup' },
+    { id: 'pessimistic-server', description: 'store + remote' },
+    { id: 'optimistic-server', description: 'store + remote + backup' }
   ],
 
   init() {

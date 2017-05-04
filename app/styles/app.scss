@@ -33,10 +33,28 @@ header.navbar {
   }
 }
 .inspector {
+  background-color: #ccc;
+  border: 1px solid #aaa;
+  border-radius: 0.25rem;
+  padding: 0.8rem;
+
+  h3 {
+    font-size: 1.5rem;
+  }
+  .btn-group-vertical, .btn-group {
+    button {
+      font-size: 0.9rem;
+    }
+    margin-bottom: 0.5rem;
+  }
+  .note {
+    font-size: 0.7rem;
+  }
   .queue {
     height: 7rem;
     overflow-y: scroll;
-    border: 1px solid #ccc;
+    border: 1px solid #aaa;
+    background-color: #fff;
     ul {
         padding: 0 0.3rem;
 
