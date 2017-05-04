@@ -162,9 +162,15 @@ export default Ember.Service.extend({
             blocking: true
           }));
 
-          return backup.pull(oqb.records())
-            .then(transform => store.sync(transform))
-            .then(() => coordinator.activate());
+          return coordinator.activate()
+            .then(() => {
+              return backup.pull(oqb.records())
+                .then(transform => store.sync(transform))
+                .then(() => backup.transformLog.clear())
+                .then(() => store.transformLog.clear())
+                .then(() => coordinator.activate())
+            });
+
         } else {
           return coordinator.activate();
         }
@@ -210,5 +216,7 @@ export default Ember.Service.extend({
     } else {
       return Orbit.Promise.resolve();
     }
-  }
+  },
+
+
 });
