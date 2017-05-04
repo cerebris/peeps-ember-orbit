@@ -1,14 +1,18 @@
 import Ember from 'ember';
 
-const { computed, get, set } = Ember;
+const { computed, get, set, inject } = Ember;
 
 export default Ember.Component.extend({
   queues: null,
-  dataCoordinator: Ember.inject.service(),
+  dataCoordinator: inject.service(),
+  orbitConfiguration: inject.service(),
 
   requestQueueLength: 0,
   syncQueueLength: 0,
   transformLogLength: 0,
+
+  activeMode: computed.alias('orbitConfiguration.mode'),
+  configurationModes: computed.alias('orbitConfiguration.availableModes'),
 
   init() {
     this._super();
@@ -17,13 +21,13 @@ export default Ember.Component.extend({
     set(this, 'activeSource', sources[0]);
   },
 
-  sources: computed({
+  sources: computed('activeMode', {
     get() {
       return Object.values(get(this, 'dataCoordinator.sources'));
     }
   }),
 
-  sourceNames: computed({
+  sourceNames: computed('activeMode', {
     get() {
       return Object.keys(get(this, 'dataCoordinator.sources'));
     }
@@ -85,6 +89,14 @@ export default Ember.Component.extend({
   actions: {
     switchSource(source) {
       set(this, 'activeSource', source);
-    } 
+    },
+
+    switchMode(mode) {
+      let configuration = get(this, 'orbitConfiguration');
+      configuration.configure(mode)
+        .then(() => {
+          get(this, 'onModeChange')();
+        });
+    }
   }
 });

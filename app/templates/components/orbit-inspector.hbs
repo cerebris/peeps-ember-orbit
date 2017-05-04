@@ -1,9 +1,21 @@
 <div class="inspector">
+  <h4>Configuration</h4>
+
+  <div class="btn-group-vertical" role="group">
+    {{#each configurationModes as |mode|}}
+      <button type="button"
+              class="btn btn-secondary {{if (eq activeMode mode.id) "active"}}"
+              {{action "switchMode" mode.id}}>
+        {{mode.description}}
+      </button>
+    {{/each}}
+  </div>
+
   <h4>Orbit Sources</h4>
 
   <div class="btn-group" role="group">
     {{#each sources as |source|}}
-      <button type="button" 
+      <button type="button"
               class="btn btn-secondary {{if (eq activeSource source) "active"}}"
               {{action "switchSource" source}}>
         {{source.name}}
