@@ -51,7 +51,13 @@ export default Ember.Component.extend({
           let model = this.get('model');
           let storeModel = this.get('store').cache.findRecord(model.type, model.id, { label: 'Find contact' });
           this.sendAction('success', storeModel);
-       });
+        })
+        .catch(e => {
+          // Note: Remote errors will only be caught here with a pessimistic update strategy.
+          // In the optimistic case, remote errors will occur after the local update has
+          // succeeded.
+          alert('Contact could not be saved');
+        });
     },
 
     cancel() {
