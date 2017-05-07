@@ -1,7 +1,7 @@
-import { 
+import {
   Model,
   attr,
-  hasOne 
+  hasOne
 } from 'ember-orbit';
 
 export default Model.extend({
