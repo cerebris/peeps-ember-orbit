@@ -73,29 +73,7 @@ export default Ember.Service.extend({
         // Truncate logs as possible
         coordinator.addStrategy(new LogTruncationStrategy());
 
-        coordinator.addStrategy(new RequestStrategy({
-          source: 'store',
-          on: 'updateFail',
-
-          action() {
-            return this.source.requestQueue.skip();
-          },
-
-          blocking: true
-        }));
-
-        coordinator.addStrategy(new RequestStrategy({
-          source: 'store',
-          on: 'queryFail',
-
-          action() {
-            return this.source.requestQueue.skip();
-          },
-
-          blocking: true
-        }));
-
-        // Configure a remote source
+        // Configure a remote source (if necessary)
         if (mode === 'pessimistic-server' ||
             mode === 'optimistic-server') {
 
@@ -112,17 +90,6 @@ export default Ember.Service.extend({
             blocking: pessimisticMode
           }));
 
-          // Push update requests to the server
-          coordinator.addStrategy(new RequestStrategy({
-            source: 'store',
-            on: 'beforeUpdate',
-
-            target: 'remote',
-            action: 'push',
-
-            blocking: pessimisticMode
-          }));
-
           // Pull query results from the server
           coordinator.addStrategy(new RequestStrategy({
             source: 'store',
@@ -131,35 +98,50 @@ export default Ember.Service.extend({
             target: 'remote',
             action: 'pull',
 
-            blocking: pessimisticMode
-          }));
+            blocking: pessimisticMode,
 
-          // Remove pull requests from the remote queue when they fail
-          coordinator.addStrategy(new RequestStrategy({
-            source: 'remote',
-            on: 'pullFail',
+            catch(e) {
+              console.log('error performing remote.pull', e);
+              this.source.requestQueue.skip();
+              this.target.requestQueue.skip();
 
-            action() {
-              return this.source.requestQueue.skip();
-            },
-
-            blocking: true
+              throw e;
+            }
           }));
 
           // Handle remote push failures differently for optimistic and pessimistic
           // scenarios.
           if (pessimisticMode) {
+            // Push update requests to the server.
             coordinator.addStrategy(new RequestStrategy({
-              source: 'remote',
-              on: 'pushFail',
+              source: 'store',
+              on: 'beforeUpdate',
 
-              action() {
-                return this.source.requestQueue.skip();
-              },
+              target: 'remote',
+              action: 'push',
 
-              blocking: true
+              blocking: true,
+
+              catch(e) {
+                console.log('error performing remote.push', e);
+                this.source.requestQueue.skip();
+                this.target.requestQueue.skip();
+
+                throw e;
+              }
             }));
           } else {
+            // Push update requests to the server.
+            coordinator.addStrategy(new RequestStrategy({
+              source: 'store',
+              on: 'beforeUpdate',
+
+              target: 'remote',
+              action: 'push',
+
+              blocking: false
+            }));
+
             coordinator.addStrategy(new RequestStrategy({
               source: 'remote',
               on: 'pushFail',
@@ -167,11 +149,14 @@ export default Ember.Service.extend({
               action(transform, e) {
                 if (e instanceof NetworkError) {
                   // When network errors are encountered, try again in 5s
-                  console.log('NetworkError - will try again soon - transform:', transform.id);
+                  console.log('NetworkError - will try again soon');
                   setTimeout(() => {
                     remote.requestQueue.retry();
                   }, 5000);
+
                 } else {
+                  // When non-network errors occur, notify the user and
+                  // reset state.
                   let label = transform.options && transform.options.label;
                   if (label) {
                     alert(`Unable to complete "${label}"`);
@@ -179,7 +164,7 @@ export default Ember.Service.extend({
                     alert(`Unable to complete operation`);
                   }
 
-                  // Roll back store's transform log
+                  // Roll back store to position before transform
                   if (store.transformLog.contains(transform.id)) {
                     console.log('Rolling back - transform:', transform.id);
                     store.rollback(transform.id, -1);
@@ -192,7 +177,6 @@ export default Ember.Service.extend({
               blocking: true
             }));
           }
-
         }
 
         // Configure a backup source
