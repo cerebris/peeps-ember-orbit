@@ -65,12 +65,35 @@ export default Ember.Service.extend({
       .then(() => {
         set(this, 'mode', mode);
         window.localStorage.setItem('peeps-mode', mode);
+        let pessimisticMode = (mode === 'pessimistic-server');
 
         // Log all events
         coordinator.addStrategy(new EventLoggingStrategy());
 
         // Truncate logs as possible
         coordinator.addStrategy(new LogTruncationStrategy());
+
+        coordinator.addStrategy(new RequestStrategy({
+          source: 'store',
+          on: 'updateFail',
+
+          action() {
+            return this.source.requestQueue.skip();
+          },
+
+          blocking: true
+        }));
+
+        coordinator.addStrategy(new RequestStrategy({
+          source: 'store',
+          on: 'queryFail',
+
+          action() {
+            return this.source.requestQueue.skip();
+          },
+
+          blocking: true
+        }));
 
         // Configure a remote source
         if (mode === 'pessimistic-server' ||
@@ -79,7 +102,6 @@ export default Ember.Service.extend({
           // Use `fetch` implementation from `ember-network`
           Orbit.fetch = fetch;
 
-          let pessimisticMode = (mode === 'pessimistic-server');
           let remote = new JSONAPISource({ name: 'remote', bucket, keyMap, schema });
           coordinator.addSource(remote);
 
@@ -93,7 +115,7 @@ export default Ember.Service.extend({
           // Push update requests to the server
           coordinator.addStrategy(new RequestStrategy({
             source: 'store',
-            on: 'update',
+            on: 'beforeUpdate',
 
             target: 'remote',
             action: 'push',
@@ -118,32 +140,59 @@ export default Ember.Service.extend({
             on: 'pullFail',
 
             action() {
-              this.source.requestQueue.skip();
-            }
+              return this.source.requestQueue.skip();
+            },
+
+            blocking: true
           }));
 
-          // Handle push failures with a custom strategy
-          coordinator.addStrategy(new RequestStrategy({
-            source: 'remote',
-            on: 'pushFail',
+          // Handle remote push failures differently for optimistic and pessimistic
+          // scenarios.
+          if (pessimisticMode) {
+            coordinator.addStrategy(new RequestStrategy({
+              source: 'remote',
+              on: 'pushFail',
 
-            action(transform, e) {
-              if (e instanceof NetworkError) {
-                // When network errors are encountered, try again in 5s
-                console.log('NetworkError - will try again soon - transform:', transform.id);
-                setTimeout(() => {
-                  remote.requestQueue.retry();
-                }, 5000);
-              } else if (e instanceof ClientError) {
-                // Roll back client errors
-                if (store.transformLog.contains(transform.id)) {
-                  console.log('Rolling back - transform:', transform.id);
-                  store.rollback(transform.id, -1);
-                  remote.requestQueue.clear();
+              action() {
+                return this.source.requestQueue.skip();
+              },
+
+              blocking: true
+            }));
+          } else {
+            coordinator.addStrategy(new RequestStrategy({
+              source: 'remote',
+              on: 'pushFail',
+
+              action(transform, e) {
+                if (e instanceof NetworkError) {
+                  // When network errors are encountered, try again in 5s
+                  console.log('NetworkError - will try again soon - transform:', transform.id);
+                  setTimeout(() => {
+                    remote.requestQueue.retry();
+                  }, 5000);
+                } else {
+                  let label = transform.options && transform.options.label;
+                  if (label) {
+                    alert(`Unable to complete "${label}"`);
+                  } else {
+                    alert(`Unable to complete operation`);
+                  }
+
+                  // Roll back store's transform log
+                  if (store.transformLog.contains(transform.id)) {
+                    console.log('Rolling back - transform:', transform.id);
+                    store.rollback(transform.id, -1);
+                  }
+
+                  return remote.requestQueue.skip();
                 }
-              }
-            }
-          }));
+              },
+
+              blocking: true
+            }));
+          }
+
         }
 
         // Configure a backup source
@@ -168,7 +217,7 @@ export default Ember.Service.extend({
                 .then(transform => store.sync(transform))
                 .then(() => backup.transformLog.clear())
                 .then(() => store.transformLog.clear())
-                .then(() => coordinator.activate())
+                .then(() => coordinator.activate());
             });
 
         } else {
@@ -196,27 +245,25 @@ export default Ember.Service.extend({
         .then(() => {
           console.log('[orbit-configuration]', 'resetting sources and strategies');
 
-          // Reset the store
-          let store = coordinator.getSource('store');
-          store.transformLog.clear();
-          store.requestQueue.clear();
-          store.syncQueue.clear();
-          store.cache.reset();
-
           // Remove strategies
           coordinator.strategyNames.forEach(name => coordinator.removeStrategy(name));
 
-          // Remove sources (other than the store)
-          coordinator.sourceNames.forEach(name => {
-            if (name !== 'store') {
-              coordinator.removeSource(name);
+          // Reset and remove sources (other than the store)
+          coordinator.sources.forEach(source => {
+            source.transformLog.clear();
+            source.requestQueue.clear();
+            source.syncQueue.clear();
+
+            if (source.name === 'store') {
+              // Keep the store around, but reset its cache
+              source.cache.reset();
+            } else {
+              coordinator.removeSource(source.name);
             }
           });
         });
     } else {
       return Orbit.Promise.resolve();
     }
-  },
-
-
+  }
 });
