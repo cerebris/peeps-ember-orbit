@@ -1,33 +1,37 @@
-# Peeps-ember-orbit
+# peeps-ember-orbit
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+This simple contact manager demo app illustrates the usage of
+[ember-orbit](https://github.com/orbitjs/ember-orbit) with multiple
+source configurations and coordination strategies.
 
-## Prerequisites
+By default, this demo will work in both the "memory" and "memory + backup"
+configurations.
 
-You will need the following things properly installed on your computer.
+If you'd like to try it out with one of the JSONAPI server configurations as
+well, you'll need to install and run
+[peeps-uuids](https://github.com/cerebris/peeps-uuids). Once you've started the
+server locally (with `rails s`), start peeps-ember-orbit so that
+requests are proxied to the server:
 
-* [Git](http://git-scm.com/)
-* [Node.js](http://nodejs.org/) (with NPM)
-* [Bower](http://bower.io/)
-* [Ember CLI](http://ember-cli.com/)
-* [PhantomJS](http://phantomjs.org/)
+```
+ember server --proxy http://127.0.0.1:3000
+```
 
 ## Installation
 
 * `git clone <repository-url>` this repository
 * change into the new directory
 * `npm install`
-* `bower install`
 
 ## Running / Development
 
 * `ember server`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 
-To proxy to a Peeps server running locally on port 3000:
+Alternatively, to proxy to a Peeps server running locally on port 3000:
 
 * `ember server --proxy http://127.0.0.1:3000`
+* Visit your app at [http://localhost:4200](http://localhost:4200).
 
 ### Code Generators
 
