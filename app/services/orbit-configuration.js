@@ -1,30 +1,13 @@
-import Orbit, {
-  ClientError,
-  NetworkError
-} from '@orbit/data';
-import {
-  EventLoggingStrategy,
-  LogTruncationStrategy,
-  RequestStrategy,
-  SyncStrategy
-} from '@orbit/coordinator';
+import Orbit from '@orbit/data';
 import { oqb } from '@orbit/data';
-import JSONAPISource from '@orbit/jsonapi';
-import LocalStorageSource from '@orbit/local-storage';
-import LocalStorageBucket from '@orbit/local-storage-bucket';
-import IndexedDBSource, { supportsIndexedDB } from '@orbit/indexeddb';
-import IndexedDBBucket from '@orbit/indexeddb-bucket';
-import fetch from 'ember-network/fetch';
 import Ember from 'ember';
 
-const { get, set, inject } = Ember;
+const { get, set, inject, getOwner } = Ember;
 
 export default Ember.Service.extend({
   // Inject all of the ember-orbit services
   store: inject.service(),
   dataCoordinator: inject.service(),
-  dataSchema: inject.service(),
-  dataKeyMap: inject.service(),
 
   mode: null,
   bucket: null,
@@ -36,17 +19,23 @@ export default Ember.Service.extend({
     { id: 'optimistic-server', description: 'store + remote + backup' }
   ],
 
-  init() {
-    this._super(...arguments);
-
-    let BucketClass = supportsIndexedDB ? IndexedDBBucket : LocalStorageBucket;
-    let bucket = new BucketClass({ namespace: 'peeps-settings' });
-    set(this, 'bucket', bucket);
-  },
-
   initialize() {
     let mode = window.localStorage.getItem('peeps-mode') || 'offline-only';
     return this.configure(mode);
+  },
+
+  addSource(name) {
+    const owner = getOwner(this);
+    const source = owner.lookup(`data-source:${name}`);
+    const coordinator = get(this, 'dataCoordinator');
+    coordinator.addSource(source);
+  },
+
+  addStrategy(name) {
+    const owner = getOwner(this);
+    const strategy = owner.lookup(`data-strategy:${name}`);
+    const coordinator = get(this, 'dataCoordinator');
+    coordinator.addStrategy(strategy);
   },
 
   configure(mode) {
@@ -54,200 +43,92 @@ export default Ember.Service.extend({
 
     console.log('[orbit-configuration]', 'mode', mode);
 
-    // Instantiate ember-orbit services
-    let coordinator = get(this, 'dataCoordinator');
-    let store = get(this, 'store');
-    let schema = get(this, 'dataSchema');
-    let keyMap = get(this, 'dataKeyMap');
-    let bucket = get(this, 'bucket');
+    const coordinator = get(this, 'dataCoordinator');
 
     return this.clearActiveConfiguration()
       .then(() => {
         set(this, 'mode', mode);
         window.localStorage.setItem('peeps-mode', mode);
-        let pessimisticMode = (mode === 'pessimistic-server');
 
-        // Log all events
-        coordinator.addStrategy(new EventLoggingStrategy());
+        this.addStrategy('event-logging');
+        this.addStrategy('log-truncation');
 
-        // Truncate logs as possible
-        coordinator.addStrategy(new LogTruncationStrategy());
-
-        // Configure a remote source (if necessary)
+        // Configure a remote source and related strategies
         if (mode === 'pessimistic-server' ||
             mode === 'optimistic-server') {
 
-          // Use `fetch` implementation from `ember-network`
-          Orbit.fetch = fetch;
+          this.addSource('remote');
 
-          let remote = new JSONAPISource({ name: 'remote', bucket, keyMap, schema });
-          coordinator.addSource(remote);
-
-          // Sync all remote changes with the store
-          coordinator.addStrategy(new SyncStrategy({
-            source: 'remote',
-            target: 'store',
-            blocking: pessimisticMode
-          }));
-
-          // Pull query results from the server
-          coordinator.addStrategy(new RequestStrategy({
-            source: 'store',
-            on: 'beforeQuery',
-
-            target: 'remote',
-            action: 'pull',
-
-            blocking: pessimisticMode,
-
-            catch(e) {
-              console.log('error performing remote.pull', e);
-              this.source.requestQueue.skip();
-              this.target.requestQueue.skip();
-
-              throw e;
-            }
-          }));
-
-          // Handle remote push failures differently for optimistic and pessimistic
-          // scenarios.
-          if (pessimisticMode) {
-            // Push update requests to the server.
-            coordinator.addStrategy(new RequestStrategy({
-              source: 'store',
-              on: 'beforeUpdate',
-
-              target: 'remote',
-              action: 'push',
-
-              blocking: true,
-
-              catch(e) {
-                console.log('error performing remote.push', e);
-                this.source.requestQueue.skip();
-                this.target.requestQueue.skip();
-
-                throw e;
-              }
-            }));
+          if (mode === 'pessimistic-server') {
+            this.addStrategy('remote-store-sync-pessimistic');
+            this.addStrategy('store-remote-query-pessimistic');
+            this.addStrategy('store-remote-update-pessimistic');
           } else {
-            // Push update requests to the server.
-            coordinator.addStrategy(new RequestStrategy({
-              source: 'store',
-              on: 'beforeUpdate',
-
-              target: 'remote',
-              action: 'push',
-
-              blocking: false
-            }));
-
-            coordinator.addStrategy(new RequestStrategy({
-              source: 'remote',
-              on: 'pushFail',
-
-              action(transform, e) {
-                if (e instanceof NetworkError) {
-                  // When network errors are encountered, try again in 5s
-                  console.log('NetworkError - will try again soon');
-                  setTimeout(() => {
-                    remote.requestQueue.retry();
-                  }, 5000);
-
-                } else {
-                  // When non-network errors occur, notify the user and
-                  // reset state.
-                  let label = transform.options && transform.options.label;
-                  if (label) {
-                    alert(`Unable to complete "${label}"`);
-                  } else {
-                    alert(`Unable to complete operation`);
-                  }
-
-                  // Roll back store to position before transform
-                  if (store.transformLog.contains(transform.id)) {
-                    console.log('Rolling back - transform:', transform.id);
-                    store.rollback(transform.id, -1);
-                  }
-
-                  return remote.requestQueue.skip();
-                }
-              },
-
-              blocking: true
-            }));
+            this.addStrategy('remote-store-sync-optimistic');
+            this.addStrategy('store-remote-query-optimistic');
+            this.addStrategy('store-remote-update-optimistic');
+            this.addStrategy('remote-push-fail');
           }
         }
 
-        // Configure a backup source
+        // Configure a backup source and related strategies
         if (mode === 'offline-only' ||
             mode === 'optimistic-server') {
 
-          let BackupClass = supportsIndexedDB ? IndexedDBSource : LocalStorageSource;
-          let backup = new BackupClass({ name: 'backup', namespace: 'peeps', bucket, keyMap, schema });
-          coordinator.addSource(backup);
+          let owner = getOwner(this);
+          let backup = owner.lookup('data-source:backup');
+          let store = owner.lookup('data-source:store');
 
-          // Backup all store changes (by making this strategy blocking we ensure that
-          // the store can't change without the change also being backed up).
-          coordinator.addStrategy(new SyncStrategy({
-            source: 'store',
-            target: 'backup',
-            blocking: true
-          }));
+          this.addSource('backup');
+          this.addStrategy('store-backup-sync-pessimistic');
 
-          return coordinator.activate()
-            .then(() => {
-              return backup.pull(oqb.records())
-                .then(transform => store.sync(transform))
-                .then(() => backup.transformLog.clear())
-                .then(() => store.transformLog.clear())
-                .then(() => coordinator.activate());
-            });
+          return backup.pull(oqb.records())
+            .then(transform => store.sync(transform))
+            .then(() => backup.transformLog.clear())
+            .then(() => store.transformLog.clear())
+            .then(() => coordinator.activate());
 
         } else {
           return coordinator.activate();
         }
+      }).then(() => {
+        console.log('[orbit-configuration]', 'sources', coordinator.sourceNames);
+        console.log('[orbit-configuration]', 'strategies', coordinator.strategyNames);
       });
   },
 
   clearActiveConfiguration() {
-    let coordinator = get(this, 'dataCoordinator');
+    const coordinator = get(this, 'dataCoordinator');
+    const wasActive = !!coordinator.activated;
 
-    if (coordinator.activated) {
-      return coordinator.deactivate()
-        .then(() => {
-          console.log('[orbit-configuration]', 'resetting browser storage');
+    return coordinator.deactivate()
+      .then(() => {
+        // Reset the backup source (if it exists and was active).
+        // This ensures the new configuration starts with a fresh state.
+        let backup = coordinator.getSource('backup');
+        if (wasActive && backup) {
+          return backup.reset();
+        } else {
+          return Orbit.Promise.resolve();
+        }
+      })
+      .then(() => {
+        // Clear all strategies
+        coordinator.strategyNames.forEach(name => coordinator.removeStrategy(name));
 
-          // Reset browser storage
-          let backup = coordinator.getSource('backup');
-          if (backup) {
-            return backup.reset();
+        // Reset and remove sources (other than the store)
+        coordinator.sources.forEach(source => {
+          source.transformLog.clear();
+          source.requestQueue.clear();
+          source.syncQueue.clear();
+
+          if (source.name === 'store') {
+            // Keep the store around, but reset its cache
+            source.cache.reset();
           } else {
-            return Orbit.Promise.resolve();
+            coordinator.removeSource(source.name);
           }
-        })
-        .then(() => {
-          console.log('[orbit-configuration]', 'resetting sources and strategies');
-
-          // Remove strategies
-          coordinator.strategyNames.forEach(name => coordinator.removeStrategy(name));
-
-          // Reset and remove sources (other than the store)
-          coordinator.sources.forEach(source => {
-            source.transformLog.clear();
-            source.requestQueue.clear();
-            source.syncQueue.clear();
-
-            if (source.name === 'store') {
-              // Keep the store around, but reset its cache
-              source.cache.reset();
-            } else {
-              coordinator.removeSource(source.name);
-            }
-          });
         });
-    } else {
-      return Orbit.Promise.resolve();
-    }
+      });
   }
 });
