@@ -1,5 +1,4 @@
 import Orbit from '@orbit/data';
-import { oqb } from '@orbit/data';
 import Ember from 'ember';
 
 const { get, set, inject, getOwner } = Ember;
@@ -82,7 +81,7 @@ export default Ember.Service.extend({
           this.addSource('backup');
           this.addStrategy('store-backup-sync-pessimistic');
 
-          return backup.pull(oqb.records())
+          return backup.pull(q => q.findRecords())
             .then(transform => store.sync(transform))
             .then(() => backup.transformLog.clear())
             .then(() => store.transformLog.clear())
