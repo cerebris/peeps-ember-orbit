@@ -31,8 +31,6 @@ export default Ember.Component.extend({
     if (this.forkedStore) {
       this.forkedStore.destroy();
     }
-    this.model = null;
-    this.storeModel = null;
   },
 
   actions: {
