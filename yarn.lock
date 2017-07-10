@@ -86,77 +86,77 @@
   dependencies:
     "@glimmer/util" "^0.22.3"
 
-"@orbit/coordinator@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/coordinator/-/coordinator-0.12.1.tgz#84c844667316ca32603474cb3b61dbf8c40fe6b7"
+"@orbit/coordinator@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/coordinator/-/coordinator-0.13.0.tgz#9454acdfabc4eccf073c6734832426c6c0d056e6"
 
-"@orbit/core@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/core/-/core-0.12.1.tgz#de8a2e2e289935d579fcb343c1e4c8328b2ce314"
+"@orbit/core@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/core/-/core-0.13.0.tgz#80042f7b2df7035bf86fa391dd6a8d03dfc548b2"
   dependencies:
-    "@orbit/utils" "^0.12.1"
+    "@orbit/utils" "^0.13.0"
 
-"@orbit/data@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/data/-/data-0.12.1.tgz#08f1f99e1d11d21cfbc73d776537ea6b9eead658"
+"@orbit/data@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/data/-/data-0.13.0.tgz#191405d33abfe21cb9499b35e905dc27c58ac538"
   dependencies:
-    "@orbit/core" "^0.12.1"
-    "@orbit/utils" "^0.12.1"
+    "@orbit/core" "^0.13.0"
+    "@orbit/utils" "^0.13.0"
 
-"@orbit/immutable@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/immutable/-/immutable-0.12.1.tgz#e1637b1e26f2a1634aebb138b0449d25b25f34c4"
+"@orbit/immutable@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/immutable/-/immutable-0.13.0.tgz#707f50896eda106c89acd50ca29cf630aa3776d2"
 
-"@orbit/indexeddb-bucket@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/indexeddb-bucket/-/indexeddb-bucket-0.12.1.tgz#98f01310c74395b68691b392bf1e130e95940e7f"
+"@orbit/indexeddb-bucket@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/indexeddb-bucket/-/indexeddb-bucket-0.13.0.tgz#1c0c6a44db5f5b66f3503fae502df098bdf169a0"
   dependencies:
-    "@orbit/core" "^0.12.1"
-    "@orbit/utils" "^0.12.1"
+    "@orbit/core" "^0.13.0"
+    "@orbit/utils" "^0.13.0"
 
-"@orbit/indexeddb@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/indexeddb/-/indexeddb-0.12.1.tgz#b0be191742e3ac4144f7f20731c9cbd3490c88ce"
+"@orbit/indexeddb@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/indexeddb/-/indexeddb-0.13.0.tgz#028b9fef0d40ff5a4acda3c22c27752c1880e41c"
   dependencies:
-    "@orbit/core" "^0.12.1"
-    "@orbit/data" "^0.12.1"
-    "@orbit/utils" "^0.12.1"
+    "@orbit/core" "^0.13.0"
+    "@orbit/data" "^0.13.0"
+    "@orbit/utils" "^0.13.0"
 
-"@orbit/jsonapi@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/jsonapi/-/jsonapi-0.12.1.tgz#44318028bb77fd0ba8ab82770852b3ff12c50e44"
+"@orbit/jsonapi@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/jsonapi/-/jsonapi-0.13.0.tgz#10e0a49cbd0c6319b28f5b7f166356befef949b9"
   dependencies:
-    "@orbit/core" "^0.12.1"
-    "@orbit/data" "^0.12.1"
-    "@orbit/utils" "^0.12.1"
+    "@orbit/core" "^0.13.0"
+    "@orbit/data" "^0.13.0"
+    "@orbit/utils" "^0.13.0"
 
-"@orbit/local-storage-bucket@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/local-storage-bucket/-/local-storage-bucket-0.12.1.tgz#7fb258c8bee97ec349cf8ac49496eeb4cfff7a62"
+"@orbit/local-storage-bucket@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/local-storage-bucket/-/local-storage-bucket-0.13.0.tgz#6272e63952abc92fc8a71012365131cc51eb3751"
   dependencies:
-    "@orbit/core" "^0.12.1"
-    "@orbit/utils" "^0.12.1"
+    "@orbit/core" "^0.13.0"
+    "@orbit/utils" "^0.13.0"
 
-"@orbit/local-storage@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/local-storage/-/local-storage-0.12.1.tgz#edf7edb5337e2d3a7624d90473e19ebecb04df68"
+"@orbit/local-storage@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/local-storage/-/local-storage-0.13.0.tgz#ef27f973491ea1eb1ad8cd456dd37dbcce7264f3"
   dependencies:
-    "@orbit/core" "^0.12.1"
-    "@orbit/data" "^0.12.1"
-    "@orbit/utils" "^0.12.1"
+    "@orbit/core" "^0.13.0"
+    "@orbit/data" "^0.13.0"
+    "@orbit/utils" "^0.13.0"
 
-"@orbit/store@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/store/-/store-0.12.1.tgz#f6bbee7a3f38d982d0f3a56fe040082457a53443"
+"@orbit/store@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/store/-/store-0.13.0.tgz#cfa7b5ba32941eaf7858f8a73c887b48e2e62e59"
   dependencies:
-    "@orbit/core" "^0.12.1"
-    "@orbit/data" "^0.12.1"
-    "@orbit/immutable" "^0.12.1"
-    "@orbit/utils" "^0.12.1"
+    "@orbit/core" "^0.13.0"
+    "@orbit/data" "^0.13.0"
+    "@orbit/immutable" "^0.13.0"
+    "@orbit/utils" "^0.13.0"
 
-"@orbit/utils@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@orbit/utils/-/utils-0.12.1.tgz#a83f1279f6f51db4530ac8067fa21bc116d56251"
+"@orbit/utils@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@orbit/utils/-/utils-0.13.0.tgz#12a1554b4065f3231376295d36ce1f4003f9f7c2"
 
 abbrev@1:
   version "1.1.0"
@@ -2464,16 +2464,16 @@ ember-network@0.3.1:
     node-fetch "^1.3.3"
     whatwg-fetch "^0.11.0"
 
-ember-orbit@^0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/ember-orbit/-/ember-orbit-0.12.1.tgz#76df005aeec71bb64d816c2c7ac4c9ee4e40a6a6"
+ember-orbit@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/ember-orbit/-/ember-orbit-0.13.0.tgz#e4c335ef0f58cce0a053f6e0ef14ee4ab43c97af"
   dependencies:
-    "@orbit/coordinator" "^0.12.1"
-    "@orbit/core" "^0.12.1"
-    "@orbit/data" "^0.12.1"
-    "@orbit/immutable" "^0.12.1"
-    "@orbit/store" "^0.12.1"
-    "@orbit/utils" "^0.12.1"
+    "@orbit/coordinator" "^0.13.0"
+    "@orbit/core" "^0.13.0"
+    "@orbit/data" "^0.13.0"
+    "@orbit/immutable" "^0.13.0"
+    "@orbit/store" "^0.13.0"
+    "@orbit/utils" "^0.13.0"
     broccoli-funnel "^1.2.0"
     broccoli-merge-trees "^2.0.0"
     broccoli-replace "^0.12.0"
