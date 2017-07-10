@@ -26,6 +26,15 @@ export default Ember.Component.extend({
     this.$('input:first').focus();
   },
 
+  willDestroy() {
+    this._super(...arguments);
+    if (this.forkedStore) {
+      this.forkedStore.destroy();
+    }
+    this.model = null;
+    this.storeModel = null;
+  },
+
   actions: {
     addPhoneNumber() {
       this.forkedStore
