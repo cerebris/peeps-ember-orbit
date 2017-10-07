@@ -1,9 +1,24 @@
-/*jshint node:true*/
-/* global require, module */
+/* eslint-env node */
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+const SW_VERSION = '2';
 
 module.exports = function(defaults) {
   const app = new EmberApp(defaults, {
+    'ember-service-worker': {
+      registrationStrategy: 'inline'
+    },
+    'asset-cache': {
+      include: ['assets/**/*'],
+      version: SW_VERSION
+    },
+    'esw-cache-fallback': {
+      patterns: ['/'],
+      version: SW_VERSION
+    },
+    vendorFiles: {
+      'jquery.js': null
+    },
     // Orbit-specific options
     orbit: {
       packages: [
