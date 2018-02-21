@@ -23,7 +23,7 @@ export default Ember.Component.extend({
   },
 
   didInsertElement() {
-    this.$('input:first').focus();
+    this.element.querySelector('input').focus();
   },
 
   willDestroy() {
@@ -40,7 +40,8 @@ export default Ember.Component.extend({
         .then((phoneNumber) => {
           this.get('model.phoneNumbers').pushObject(phoneNumber);
           window.requestAnimationFrame(() => {
-            this.$('input.phone-number:last').focus();
+            let inputs = this.element.querySelectorAll('input.phone-number');
+            inputs[inputs.length - 1].focus();
           });
         });
     },
