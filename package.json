@@ -15,11 +15,11 @@
     "test": "ember test"
   },
   "devDependencies": {
-    "@orbit/indexeddb": "^0.15.0",
-    "@orbit/indexeddb-bucket": "^0.15.0",
-    "@orbit/jsonapi": "^0.15.0",
-    "@orbit/local-storage": "^0.15.0",
-    "@orbit/local-storage-bucket": "^0.15.0",
+    "@orbit/indexeddb": "^0.15.10",
+    "@orbit/indexeddb-bucket": "^0.15.10",
+    "@orbit/jsonapi": "^0.15.10",
+    "@orbit/local-storage": "^0.15.10",
+    "@orbit/local-storage-bucket": "^0.15.10",
     "bootstrap": "^4.0.0-alpha.6",
     "broccoli-asset-rev": "^2.4.5",
     "ember-cli": "^2.16.0-beta.2",
@@ -49,7 +49,7 @@
     "ember-web-app-rename": "^1.0.0",
     "loader.js": "^4.2.3",
     "ember-bootstrap": "1.0.0-rc.2",
-    "ember-orbit": "^0.15.0",
+    "ember-orbit": "^0.15.4",
     "ember-truth-helpers": "^1.3.0"
   },
   "engines": {

@@ -95,6 +95,12 @@
   dependencies:
     "@orbit/utils" "^0.15.0"
 
+"@orbit/core@^0.15.10":
+  version "0.15.10"
+  resolved "https://registry.yarnpkg.com/@orbit/core/-/core-0.15.10.tgz#c5dc7bbb98c1653e17934983ac92af0549cf81ee"
+  dependencies:
+    "@orbit/utils" "^0.15.7"
+
 "@orbit/data@^0.15.0", "@orbit/data@^0.15.6":
   version "0.15.6"
   resolved "https://registry.yarnpkg.com/@orbit/data/-/data-0.15.6.tgz#5dd173c881164383f4bdb39b2a0029b8d1e4ab93"
@@ -102,47 +108,54 @@
     "@orbit/core" "^0.15.0"
     "@orbit/utils" "^0.15.0"
 
+"@orbit/data@^0.15.10":
+  version "0.15.10"
+  resolved "https://registry.yarnpkg.com/@orbit/data/-/data-0.15.10.tgz#0445015317e78402453dde3ce37d77bbf3dd6881"
+  dependencies:
+    "@orbit/core" "^0.15.10"
+    "@orbit/utils" "^0.15.7"
+
 "@orbit/immutable@^0.15.0":
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/@orbit/immutable/-/immutable-0.15.0.tgz#c4009dd41a8fb2b560e9e3e276ee2fc43d60a7e3"
 
-"@orbit/indexeddb-bucket@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@orbit/indexeddb-bucket/-/indexeddb-bucket-0.15.0.tgz#1ef525a23380ac1be07fb73eb3a0e0f4618210b9"
+"@orbit/indexeddb-bucket@^0.15.10":
+  version "0.15.10"
+  resolved "https://registry.yarnpkg.com/@orbit/indexeddb-bucket/-/indexeddb-bucket-0.15.10.tgz#96ea851c3eebcc3ebb11e01d1ceb61562de00835"
   dependencies:
-    "@orbit/core" "^0.15.0"
-    "@orbit/utils" "^0.15.0"
+    "@orbit/core" "^0.15.10"
+    "@orbit/utils" "^0.15.7"
 
-"@orbit/indexeddb@^0.15.0":
-  version "0.15.6"
-  resolved "https://registry.yarnpkg.com/@orbit/indexeddb/-/indexeddb-0.15.6.tgz#22797d0055d01785c9058fbddba9504811464d7e"
+"@orbit/indexeddb@^0.15.10":
+  version "0.15.10"
+  resolved "https://registry.yarnpkg.com/@orbit/indexeddb/-/indexeddb-0.15.10.tgz#113bef7d69f878f6e087073edcc7d1ffaa4b92e7"
   dependencies:
-    "@orbit/core" "^0.15.0"
-    "@orbit/data" "^0.15.6"
-    "@orbit/utils" "^0.15.0"
+    "@orbit/core" "^0.15.10"
+    "@orbit/data" "^0.15.10"
+    "@orbit/utils" "^0.15.7"
 
-"@orbit/jsonapi@^0.15.0":
-  version "0.15.6"
-  resolved "https://registry.yarnpkg.com/@orbit/jsonapi/-/jsonapi-0.15.6.tgz#9523850a82bc59c764c7ecf2d577d4b5538b6c4b"
+"@orbit/jsonapi@^0.15.10":
+  version "0.15.10"
+  resolved "https://registry.yarnpkg.com/@orbit/jsonapi/-/jsonapi-0.15.10.tgz#cabddc2f59dbd429efbcc926767e672f10ebc8f6"
   dependencies:
-    "@orbit/core" "^0.15.0"
-    "@orbit/data" "^0.15.6"
-    "@orbit/utils" "^0.15.0"
+    "@orbit/core" "^0.15.10"
+    "@orbit/data" "^0.15.10"
+    "@orbit/utils" "^0.15.7"
 
-"@orbit/local-storage-bucket@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@orbit/local-storage-bucket/-/local-storage-bucket-0.15.0.tgz#c451fedd4439ee2751a2f5225244f3e7fbcd1ea8"
+"@orbit/local-storage-bucket@^0.15.10":
+  version "0.15.10"
+  resolved "https://registry.yarnpkg.com/@orbit/local-storage-bucket/-/local-storage-bucket-0.15.10.tgz#4d21d48026e2ccd36c8d142d6174bcfd555f3a9f"
   dependencies:
-    "@orbit/core" "^0.15.0"
-    "@orbit/utils" "^0.15.0"
+    "@orbit/core" "^0.15.10"
+    "@orbit/utils" "^0.15.7"
 
-"@orbit/local-storage@^0.15.0":
-  version "0.15.6"
-  resolved "https://registry.yarnpkg.com/@orbit/local-storage/-/local-storage-0.15.6.tgz#5b8de4962f81151c7680a39a4142a4de1e1f94ba"
+"@orbit/local-storage@^0.15.10":
+  version "0.15.10"
+  resolved "https://registry.yarnpkg.com/@orbit/local-storage/-/local-storage-0.15.10.tgz#812c16d076681390d301b4a76fd105b60c592357"
   dependencies:
-    "@orbit/core" "^0.15.0"
-    "@orbit/data" "^0.15.6"
-    "@orbit/utils" "^0.15.0"
+    "@orbit/core" "^0.15.10"
+    "@orbit/data" "^0.15.10"
+    "@orbit/utils" "^0.15.7"
 
 "@orbit/store@^0.15.0":
   version "0.15.6"
@@ -156,6 +169,10 @@
 "@orbit/utils@^0.15.0":
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/@orbit/utils/-/utils-0.15.0.tgz#496eda743747715e39d27ada001b13170ec10383"
+
+"@orbit/utils@^0.15.7":
+  version "0.15.7"
+  resolved "https://registry.yarnpkg.com/@orbit/utils/-/utils-0.15.7.tgz#fe68da9f1f90e6be4a1ac149e5860dd78a30da38"
 
 abbrev@1:
   version "1.1.1"
@@ -2770,9 +2787,9 @@ ember-native-dom-event-dispatcher@^0.6.3:
   dependencies:
     ember-cli-babel "^6.4.1"
 
-ember-orbit@^0.15.0:
-  version "0.15.3"
-  resolved "https://registry.yarnpkg.com/ember-orbit/-/ember-orbit-0.15.3.tgz#a8332625e1697739ea57e87803a939f640bfb1fa"
+ember-orbit@^0.15.4:
+  version "0.15.4"
+  resolved "https://registry.yarnpkg.com/ember-orbit/-/ember-orbit-0.15.4.tgz#1da7c90effadce918efbd627d0bc01e457dee9c6"
   dependencies:
     "@orbit/coordinator" "^0.15.0"
     "@orbit/core" "^0.15.0"
