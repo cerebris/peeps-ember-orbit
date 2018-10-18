@@ -1,18 +1,19 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { set, get, computed } from '@ember/object';
 
-const { computed, get, set, inject } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   queues: null,
-  dataCoordinator: inject.service(),
-  orbitConfiguration: inject.service(),
+  dataCoordinator: service(),
+  orbitConfiguration: service(),
 
   requestQueueLength: 0,
   syncQueueLength: 0,
   transformLogLength: 0,
 
-  activeMode: computed.alias('orbitConfiguration.mode'),
-  configurationModes: computed.alias('orbitConfiguration.availableModes'),
+  activeMode: alias('orbitConfiguration.mode'),
+  configurationModes: alias('orbitConfiguration.availableModes'),
 
   init() {
     this._super();

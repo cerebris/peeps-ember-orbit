@@ -1,10 +1,12 @@
-import Ember from 'ember';
+import { none } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
-  store: Ember.inject.service(),
+export default Component.extend({
+  store: service(),
   storeModel: null,
   model: null,
-  isNew: Ember.computed.none('storeModel'),
+  isNew: none('storeModel'),
 
   init() {
     this._super(...arguments);

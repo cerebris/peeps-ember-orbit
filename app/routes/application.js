@@ -1,9 +1,9 @@
-import Ember from 'ember';
-
-const { get, inject, Route } = Ember;
+import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
+import Route from '@ember/routing/route';
 
 export default Route.extend({
-  orbitConfiguration: inject.service(),
+  orbitConfiguration: service(),
 
   beforeModel() {
     // Initialize the default (or most recently used) configuration for this

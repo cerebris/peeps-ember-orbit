@@ -1,12 +1,14 @@
 /* globals md5 */
 
-import Ember from 'ember';
+import { computed } from '@ember/object';
 
-export default Ember.Component.extend({
+import Component from '@ember/component';
+
+export default Component.extend({
   size: 100,
   email: '',
 
-  gravatarUrl: Ember.computed('email', 'size', function() {
+  gravatarUrl: computed('email', 'size', function() {
     let email = this.get('email');
     let size = this.get('size');
 

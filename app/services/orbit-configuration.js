@@ -1,12 +1,12 @@
+import Service, { inject as service } from '@ember/service';
+import { set, get } from '@ember/object';
+import { getOwner } from '@ember/application';
 import Orbit from '@orbit/data';
-import Ember from 'ember';
 
-const { get, set, inject, getOwner } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   // Inject all of the ember-orbit services
-  store: inject.service(),
-  dataCoordinator: inject.service(),
+  store: service(),
+  dataCoordinator: service(),
 
   mode: null,
   bucket: null,
