@@ -6,15 +6,5 @@ export default Route.extend({
       into: 'contacts',
       outlet: 'detail'
     });
-  },
-
-  actions: {
-    contactCreated() {
-      this.transitionTo('contacts.index');
-    },
-
-    cancelContactCreation() {
-      this.transitionTo('contacts.index');
-    }
   }
 });

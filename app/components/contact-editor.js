@@ -60,7 +60,7 @@ export default Component.extend({
         .then(() => {
           let model = this.get('model');
           let storeModel = this.get('store').cache.findRecord(model.type, model.id, { label: 'Find contact' });
-          this.sendAction('success', storeModel);
+          this.onSuccess(storeModel);
         })
         .catch(() => {
           // Note: Remote errors will only be caught here with a pessimistic update strategy.
@@ -71,7 +71,7 @@ export default Component.extend({
     },
 
     cancel() {
-      this.sendAction('cancel');
+      this.onCancel();
     }
   }
 });
