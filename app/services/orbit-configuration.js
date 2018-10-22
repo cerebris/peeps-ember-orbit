@@ -10,13 +10,17 @@ export default Service.extend({
 
   mode: null,
   bucket: null,
+  availableModes: null,
 
-  availableModes: [
-    { id: 'memory-only', description: 'store' },
-    { id: 'offline-only', description: 'store + backup' },
-    { id: 'pessimistic-server', description: 'store + remote' },
-    { id: 'optimistic-server', description: 'store + remote + backup' }
-  ],
+  init() {
+    this._super();
+    this.set('availableModes', [
+      { id: 'memory-only', description: 'store' },
+      { id: 'offline-only', description: 'store + backup' },
+      { id: 'pessimistic-server', description: 'store + remote' },
+      { id: 'optimistic-server', description: 'store + remote + backup' }
+    ]);
+  },
 
   initialize() {
     let mode = window.localStorage.getItem('peeps-mode') || 'offline-only';
