@@ -1,20 +1,10 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
+export default Route.extend({
   renderTemplate() {
     this.render({
       into: 'contacts',
       outlet: 'detail'
     });
-  },
-
-  actions: {
-    contactUpdated() {
-      this.transitionTo('contact.index');
-    },
-
-    cancelContactEditing() {
-      this.transitionTo('contact.index');
-    }
   }
 });

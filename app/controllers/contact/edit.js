@@ -2,7 +2,11 @@ import Controller from '@ember/controller';
 
 export default Controller.extend({
   actions: {
-    modeChanged() {
+    contactUpdated() {
+      this.transitionToRoute('index');
+    },
+
+    cancelContactEditing() {
       this.transitionToRoute('index');
     }
   }

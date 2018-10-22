@@ -12,12 +12,15 @@ addons:
 cache:
   yarn: true
 
-before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash
-  - export PATH=$HOME/.yarn/bin:$PATH
+env:
+  global:
+    # See https://git.io/vdao3 for details.
+    - JOBS=1
 
-install:
-  - yarn install --non-interactive
+before_install:
+  - npm config set spin false
 
 script:
-  - yarn test
+  - npm run lint:hbs
+  - npm run lint:js
+  - npm test

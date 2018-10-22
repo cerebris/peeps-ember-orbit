@@ -1,10 +1,12 @@
-import Ember from 'ember';
+import { none } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
-  store: Ember.inject.service(),
+export default Component.extend({
+  store: service(),
   storeModel: null,
   model: null,
-  isNew: Ember.computed.none('storeModel'),
+  isNew: none('storeModel'),
 
   init() {
     this._super(...arguments);
@@ -58,7 +60,7 @@ export default Ember.Component.extend({
         .then(() => {
           let model = this.get('model');
           let storeModel = this.get('store').cache.findRecord(model.type, model.id, { label: 'Find contact' });
-          this.sendAction('success', storeModel);
+          this.onSuccess(storeModel);
         })
         .catch(() => {
           // Note: Remote errors will only be caught here with a pessimistic update strategy.
@@ -69,7 +71,7 @@ export default Ember.Component.extend({
     },
 
     cancel() {
-      this.sendAction('cancel');
+      this.onCancel();
     }
   }
 });

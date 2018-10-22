@@ -1,22 +1,26 @@
+import Service, { inject as service } from '@ember/service';
+import { set, get } from '@ember/object';
+import { getOwner } from '@ember/application';
 import Orbit from '@orbit/data';
-import Ember from 'ember';
 
-const { get, set, inject, getOwner } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   // Inject all of the ember-orbit services
-  store: inject.service(),
-  dataCoordinator: inject.service(),
+  store: service(),
+  dataCoordinator: service(),
 
   mode: null,
   bucket: null,
+  availableModes: null,
 
-  availableModes: [
-    { id: 'memory-only', description: 'store' },
-    { id: 'offline-only', description: 'store + backup' },
-    { id: 'pessimistic-server', description: 'store + remote' },
-    { id: 'optimistic-server', description: 'store + remote + backup' }
-  ],
+  init() {
+    this._super();
+    this.set('availableModes', [
+      { id: 'memory-only', description: 'store' },
+      { id: 'offline-only', description: 'store + backup' },
+      { id: 'pessimistic-server', description: 'store + remote' },
+      { id: 'optimistic-server', description: 'store + remote + backup' }
+    ]);
+  },
 
   initialize() {
     let mode = window.localStorage.getItem('peeps-mode') || 'offline-only';

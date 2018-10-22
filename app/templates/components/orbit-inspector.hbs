@@ -2,9 +2,11 @@
   <h3>Configuration</h3>
   <div class="btn-group-vertical" role="group">
     {{#each configurationModes as |mode|}}
-      <button type="button"
-              class="btn btn-secondary {{if (eq activeMode mode.id) "active"}}"
-              {{action "switchMode" mode.id}}>
+      <button
+        type="button"
+        class="btn btn-secondary {{if (eq activeMode mode.id) "active"}}"
+        {{action "switchMode" mode.id}}
+      >
         {{mode.description}}
       </button>
     {{/each}}
@@ -18,9 +20,11 @@
 
   <div class="btn-group" role="group">
     {{#each sources as |source|}}
-      <button type="button"
-              class="btn btn-secondary {{if (eq activeSource source) "active"}}"
-              {{action "switchSource" source}}>
+      <button
+        type="button"
+        class="btn btn-secondary {{if (eq activeSource source) "active"}}"
+        {{action "switchSource" source}}
+      >
         {{source.name}}
       </button>
     {{/each}}
@@ -29,27 +33,27 @@
   <h6>Request queue ({{requestQueueLength}})</h6>
   <div class="queue">
     <ul>
-    {{#each requestQueueEntries as |entry|}}
-      <li>{{entry.data.options.label}}</li>
-    {{/each}}
+      {{#each requestQueueEntries as |entry|}}
+        <li>{{entry.data.options.label}}</li>
+      {{/each}}
     </ul>
   </div>
 
   <h6>Sync queue ({{syncQueueLength}})</h6>
   <div class="queue">
     <ul>
-    {{#each syncQueueEntries as |entry|}}
-      <li>{{entry.data.options.label}}</li>
-    {{/each}}
+      {{#each syncQueueEntries as |entry|}}
+        <li>{{entry.data.options.label}}</li>
+      {{/each}}
     </ul>
   </div>
 
   <h6>Transform log ({{transformLogLength}})</h6>
   <div class="queue">
     <ul>
-    {{#each transformLogEntries as |entry|}}
-      <li>{{entry}}</li>
-    {{/each}}
+      {{#each transformLogEntries as |entry|}}
+        <li>{{entry}}</li>
+      {{/each}}
     </ul>
   </div>
 </div>

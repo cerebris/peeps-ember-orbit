@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
 import { 
   Model,
   attr,
@@ -12,7 +12,7 @@ export default Model.extend({
   twitter: attr('string'),
   phoneNumbers: hasMany('phoneNumber', { inverse: 'contact' }),
 
-  fullName: Ember.computed('firstName', 'lastName', function() {
+  fullName: computed('firstName', 'lastName', function() {
     var firstName = this.get('firstName');
     var lastName = this.get('lastName');
 
