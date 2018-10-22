@@ -2,36 +2,62 @@
   <legend>{{#if isNew}}Create{{else}}Edit{{/if}} Contact</legend>
   <div class="form-group">
     <label for="inputFirstName">First name:</label>
-    {{input type="text" class="form-control" id="inputFirstName" value=model.firstName}}
+    {{input
+      type="text"
+      class="form-control"
+      id="inputFirstName"
+      value=model.firstName
+    }}
   </div>
   <div class="form-group">
     <label for="inputLastName">Last name:</label>
-    {{input type="text" class="form-control" id="inputLastName" value=model.lastName}}
+    {{input
+      type="text"
+      class="form-control"
+      id="inputLastName"
+      value=model.lastName
+    }}
   </div>
   <div class="form-group">
     <label for="inputEmail">Email:</label>
-    {{input type="text" class="form-control" id="inputEmail" value=model.email}}
+    {{input
+      type="text"
+      class="form-control"
+      id="inputEmail"
+      value=model.email
+    }}
   </div>
   <div class="form-group">
     <label>Phone numbers:</label>
 
     {{#each model.phoneNumbers as |phoneNumber|}}
-    <div class="form-group">
-      <div class="row">
-        <div class="col-4">
-          {{input type="text" class="form-control phone-number" value=phoneNumber.phoneNumber placeholder="Number"}}
-        </div>
-        <div class="col-2">
-          <button type="button" class="btn btn-secondary" {{action "removePhoneNumber" phoneNumber}}>Remove</button>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-4">
+            {{input
+              type="text"
+              class="form-control phone-number"
+              value=phoneNumber.phoneNumber
+              placeholder="Number"
+            }}
+          </div>
+          <div class="col-2">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              {{action "removePhoneNumber" phoneNumber}}
+            >
+              Remove
+            </button>
+          </div>
         </div>
       </div>
-    </div>
     {{/each}}
     <div class="form-group">
       <button type="button" class="btn btn-secondary" {{action "addPhoneNumber"}}>Add phone number</button>
     </div>
   </div>
-  <hr />
+  <hr>
   <div class="form-group row">
     <div class="col-2">
       <button type="submit" class="btn btn-primary">Submit</button>
