@@ -9,9 +9,6 @@ export default Component.extend({
   email: '',
 
   gravatarUrl: computed('email', 'size', function() {
-    let email = this.get('email');
-    let size = this.get('size');
-
-    return 'http://www.gravatar.com/avatar/' + md5(email) + '?s=' + size;
+    return `http://www.gravatar.com/avatar/${md5(this.email)}?s=${this.size}`;
   })
 });

@@ -1,5 +1,4 @@
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
 import Route from '@ember/routing/route';
 
 export default Route.extend({
@@ -15,6 +14,6 @@ export default Route.extend({
     // necessary to call `dataCoordinator.activate()` to activate the
     // coordinator service in this hook (and since activation is an async
     // process, a promise should be returned here).
-    return get(this, 'orbitConfiguration').initialize();
+    return this.orbitConfiguration.initialize();
   }
 });

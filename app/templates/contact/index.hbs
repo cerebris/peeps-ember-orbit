@@ -2,7 +2,7 @@
 <div class="full-contact card">
   <div class="card-block">
     <h2 class="d-flex justify-content-start align-items-center">
-      {{gravatar-image email=model.email}}
+      <GravatarImage @email={{model.email}} />
       {{model.fullName}}
     </h2>
   </div>
@@ -19,7 +19,7 @@
   {{/if}}
 
   <div class="card-block">
-    <a class="btn btn-secondary" role="button" onclick={{action "edit"}}>Edit</a>
-    <a class="btn btn-secondary" role="button" onclick={{action "remove"}}>Remove</a>
+    <a class="btn btn-secondary" role="button" {{action "edit"}}>Edit</a>
+    <a class="btn btn-secondary" role="button" {{action "remove"}}>Remove</a>
   </div>
 </div>

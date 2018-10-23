@@ -6,10 +6,9 @@ export default Controller.extend({
       this.transitionToRoute('contact.edit');
     },
 
-    remove() {
-      this.get('model')
-        .remove({ label: 'Remove contact' })
-        .then(() => this.transitionToRoute('contacts.index'));
+    async remove() {
+      await this.model.remove({ label: 'Remove contact' });
+      this.transitionToRoute('contacts.index');
     }
   }
 });

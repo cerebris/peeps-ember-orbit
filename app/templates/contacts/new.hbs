@@ -1,4 +1,4 @@
-{{contact-editor
-  onSuccess=(action "contactCreated")
-  onCancel=(action "cancelContactCreation")
-}}
+<ContactEditor
+  @onSuccess={{action "contactCreated"}}
+  @onCancel={{action "cancelContactCreation"}}
+/>
