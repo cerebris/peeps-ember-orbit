@@ -1,8 +1,8 @@
 import { computed } from '@ember/object';
-import { 
+import {
   Model,
   attr,
-  hasMany 
+  hasMany
 } from 'ember-orbit';
 
 export default Model.extend({
@@ -13,8 +13,8 @@ export default Model.extend({
   phoneNumbers: hasMany('phoneNumber', { inverse: 'contact' }),
 
   fullName: computed('firstName', 'lastName', function() {
-    var firstName = this.get('firstName');
-    var lastName = this.get('lastName');
+    let firstName = this.firstName;
+    let lastName = this.lastName;
 
     if (firstName && lastName) {
       return firstName + ' ' + lastName;

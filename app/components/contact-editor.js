@@ -8,20 +8,20 @@ export default Component.extend({
   model: null,
   isNew: none('storeModel'),
 
-  init() {
+  async init() {
     this._super(...arguments);
 
-    this.forkedStore = this.get('store').fork();
+    this.forkedStore = this.store.fork();
 
-    if (this.get('isNew')) {
-      this.forkedStore.addRecord({type: 'contact'})
-        .then(contact => this.set('model', contact));
-
+    let model;
+    if (this.isNew) {
+      model = await this.forkedStore.addRecord({type: 'contact'})
     } else {
-      let storeModel = this.get('storeModel');
-      let model = this.forkedStore.cache.findRecord(storeModel.type, storeModel.id);
-      this.set('model', model);
+      let storeModel = this.storeModel;
+      model = this.forkedStore.cache.findRecord(storeModel.type, storeModel.id);
     }
+
+    this.set('model', model);
   },
 
   didInsertElement() {
@@ -36,38 +36,39 @@ export default Component.extend({
   },
 
   actions: {
-    addPhoneNumber() {
-      this.forkedStore
-        .addRecord({type: 'phoneNumber'})
-        .then((phoneNumber) => {
-          this.get('model.phoneNumbers').pushObject(phoneNumber);
-          window.requestAnimationFrame(() => {
-            let inputs = this.element.querySelectorAll('input.phone-number');
-            inputs[inputs.length - 1].focus();
-          });
-        });
+    async addPhoneNumber() {
+      let phoneNumber = await this.forkedStore.addRecord({type: 'phoneNumber'});
+
+      this.model.phoneNumbers.pushObject(phoneNumber);
+
+      window.requestAnimationFrame(() => {
+        let inputs = this.element.querySelectorAll('input.phone-number');
+        inputs[inputs.length - 1].focus();
+      });
     },
 
-    removePhoneNumber(phoneNumber) {
-      this.get('model.phoneNumbers')
-        .removeObject(phoneNumber)
-        .then(() => phoneNumber.remove());
+    async removePhoneNumber(phoneNumber) {
+      await this.model.phoneNumbers.removeObject(phoneNumber);
+      await phoneNumber.remove();
     },
 
-    save() {
-      this.get('store')
-        .merge(this.forkedStore, { transformOptions: { label: 'Save contact' }})
-        .then(() => {
-          let model = this.get('model');
-          let storeModel = this.get('store').cache.findRecord(model.type, model.id, { label: 'Find contact' });
-          this.onSuccess(storeModel);
-        })
-        .catch(() => {
-          // Note: Remote errors will only be caught here with a pessimistic update strategy.
-          // In the optimistic case, remote errors will occur after the local update has
-          // succeeded.
-          alert('Contact could not be saved');
-        });
+    async save() {
+      try {
+        await this.store.merge(this.forkedStore,
+          { transformOptions: { label: 'Save contact' }});
+
+        let model = this.model;
+        let storeModel = this.store.cache.findRecord(model.type, model.id,
+          { label: 'Find contact' });
+
+        this.onSuccess(storeModel);
+
+      } catch(e) {
+        // Note: Remote errors will only be caught here with a pessimistic update strategy.
+        // In the optimistic case, remote errors will occur after the local update has
+        // succeeded.
+        alert('Contact could not be saved');
+      }
     },
 
     cancel() {
