@@ -3641,9 +3641,10 @@ ember-maybe-in-element@^0.1.3:
   dependencies:
     ember-cli-babel "^6.11.0"
 
-ember-orbit@^0.15.7:
-  version "0.15.7"
-  resolved "https://registry.yarnpkg.com/ember-orbit/-/ember-orbit-0.15.7.tgz#eadbb85a402f9b22499fd10db8394df61a4ed608"
+ember-orbit@^0.15.10:
+  version "0.15.10"
+  resolved "https://registry.yarnpkg.com/ember-orbit/-/ember-orbit-0.15.10.tgz#bcd4a388d8ac0c8e94ce36f22fc659950bbbfe6c"
+  integrity sha512-+GO7HOQrPr7JqDaPTe8FXB2kbpym6Hntt4DejhOSkP+lPUAQXk1EQJr1QdUxuWKk2Drbi1T1t0z7SYL1NX7vhA==
   dependencies:
     "@orbit/coordinator" "^0.15.23"
     "@orbit/core" "^0.15.23"
